@@ -1,0 +1,6 @@
+chartDirectory = "charts/"
+tablesDirectory = "tables/"
+audioDirectory = "audio/"
+audioFileExtension = ".wav"
+imageFileExtension = ".png"
+tableFileExtension = ".xlsx"
