@@ -25,13 +25,6 @@ def createMelFrom(audioFile: str, chartName: str):
     # load audio files with librosa
     scale, sr = librosa.load(audioFile)
 
-    # filter_banks = librosa.filters.mel(n_fft=2048, sr=22050, n_mels=10)
-    # plt.figure(figsize=(25, 10))
-    # librosa.display.specshow(filter_banks,
-    #                          sr=sr,
-    #                          x_axis="linear")
-    # plt.colorbar(format="%+2.f")
-
     mel_spectrogram = librosa.feature.melspectrogram(y=scale, sr=sr, n_fft=2048, hop_length=512, n_mels=10)
     log_mel_spectrogram = librosa.power_to_db(mel_spectrogram)
     figure = plt.figure(figsize=(25, 10))

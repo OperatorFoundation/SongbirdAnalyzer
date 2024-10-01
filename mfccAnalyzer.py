@@ -19,7 +19,7 @@ def createMfccsFrom(directory: str):
             createMfccFrom(filePath, chartName)
 
 def createMfccFrom(audioFile: str, chartName: str):
-    chartType = "MFCC"
+    chartType = "MFCC" # This is only used for filenames
     chartName = chartName + chartType
 
     # load audio files with librosa
@@ -36,6 +36,8 @@ def createMfccFrom(audioFile: str, chartName: str):
     plt.colorbar(format="%+2.f")
 
     ## Computing first / second MFCCs derivatives
+
+    # TODO: Try calculating without the deltas for a smaller dataset
     delta_mfccs = librosa.feature.delta(mfccs)
     delta2_mfccs = librosa.feature.delta(mfccs, order=2)
     plt.figure(figsize=(25, 10))
@@ -55,6 +57,13 @@ def createMfccFrom(audioFile: str, chartName: str):
     plt.colorbar(format="%+2.f")
 
     mfccs_features = np.concatenate((mfccs, delta_mfccs, delta2_mfccs))
+
+    # # Save the DataFrame to an Excel file
+    # tableFilePath = tablesDirectory + filename + ".xlsx"
+    # dataframe.to_excel(tableFilePath, index=False)
+
+    # tableFilePath = tablesDirectory + filename + ".csv"
+    # dataframe.to_csv(tableFilePath, index=False, header=True)
 
     #  Save the chart as a png (this must be done before calling .show() or only a blank image will be saved)
     plt.savefig(chartDirectory + chartName + imageFileExtension)
