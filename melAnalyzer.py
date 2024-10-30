@@ -1,7 +1,9 @@
 import os
 
+import librosa
 import librosa.display
 import matplotlib.pyplot as plt
+import numpy as np
 
 from constants import chartDirectory, imageFileExtension
 
@@ -23,20 +25,26 @@ def createMelFrom(audioFile: str, chartName: str):
     chartType = "Mel"
     chartName = chartName + chartType
     # load audio files with librosa
-    scale, sr = librosa.load(audioFile)
+    wave_form, sample_rate = librosa.load(audioFile)
 
-    mel_spectrogram = librosa.feature.melspectrogram(y=scale, sr=sr, n_fft=2048, hop_length=512, n_mels=10)
-    log_mel_spectrogram = librosa.power_to_db(mel_spectrogram)
+
+    window_size = 2048 # the number of samples in each frame
+    hop_length = 512 # the number of samples between successive frames
+    number_of_mels = 10 # the number of Mel bands to generate
+    mel_spectrogram = librosa.feature.melspectrogram(y=wave_form, sr=sample_rate, n_fft=window_size, hop_length=hop_length, n_mels=number_of_mels)
+    mel_spectrogram_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
     figure = plt.figure(figsize=(25, 10))
 
     # Adds a title to the top of the chart
     figure.suptitle(chartName)
 
-    librosa.display.specshow(log_mel_spectrogram,
+    librosa.display.specshow(mel_spectrogram_db,
                              x_axis="time",
                              y_axis="mel",
-                             sr=sr)
-    plt.colorbar(format="%+2.f")
+                             sr=sample_rate)
+    plt.colorbar(format="%+2.0f dB")
+    plt.title('Mel Spectrogram')
+    plt.tight_layout()
 
     #  Save the chart as a png (this must be done before calling .show() or only a blank image will be saved)
     plt.savefig(chartDirectory + chartName + imageFileExtension)
