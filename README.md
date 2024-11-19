@@ -3,6 +3,7 @@
 brew install sox
 mkdir images
 mkdir results
+mkdir mfccs
 
 == Running
 
