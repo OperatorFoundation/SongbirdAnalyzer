@@ -1,5 +1,6 @@
 images/
 results/
+mfccs/
 audio/**/*.wav
 audio/AS*
 .idea/*
