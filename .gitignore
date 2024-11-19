@@ -1,3 +1,5 @@
+images/
+results/
 audio/**/*.wav
 audio/AS*
 .idea/*
