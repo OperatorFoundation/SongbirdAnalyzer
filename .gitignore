@@ -1,4 +1,4 @@
-
+audio/**/*.wav
 audio/AS*
 .idea/*
 .DS_Store
