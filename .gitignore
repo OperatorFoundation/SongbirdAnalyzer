@@ -1,6 +1,6 @@
-images/
-results/
-mfccs/
+images/*.png
+results/*.csv
+mfccs/*.csv
 audio/**/*.wav
 audio/AS*
 .idea/*
