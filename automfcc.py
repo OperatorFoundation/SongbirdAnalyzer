@@ -9,12 +9,15 @@ import os.path
 from pathlib import Path
 import sys
 
+max_files = 5
 users=os.listdir("audio")
 for user in users:
     print(f"Processing user {user}")
     wavs = glob.glob(f"audio/{user}/*.wav")
 
-    for wav in wavs:
+# Limit to the first x wav files
+    for index in range(max_files):
+        wav = wavs[index]
         print(f"{wav}...")
         audio_file = wav
         signal, sr = librosa.load(audio_file)
