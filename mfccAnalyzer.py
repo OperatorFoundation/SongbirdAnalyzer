@@ -71,4 +71,3 @@ def create_mfcc_chart_from(audioFile: str, chartName: str):
 
     #  Save the chart as a png (this must be done before calling .show() or only a blank image will be saved)
     plt.savefig(chartDirectory + chartName + imageFileExtension)
-    
