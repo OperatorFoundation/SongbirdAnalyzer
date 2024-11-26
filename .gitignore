@@ -1,7 +1,7 @@
 images/*.png
 results/*.csv
 mfccs/*.csv
-audio/**/*.wav
+audio/Tests/**/*.wav
 audio/AS*
 .idea/*
 .DS_Store
