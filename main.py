@@ -3,7 +3,7 @@
 from melAnalyzer import createMelFrom, createMelsFrom
 from mfccAnalyzer import create_mfcc_chart_from, create_mfcc_charts_from
 
-audioDirectory = "audio/Tests"
+audioDirectory = "audio/tests"
 audioFileExtension = ".wav"
 
 

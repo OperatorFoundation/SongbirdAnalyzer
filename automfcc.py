@@ -11,6 +11,7 @@ import sys
 
 max_files = 5
 users = os.listdir(sys.argv[1])
+output_directory = sys.argv[2]
 
 for user in users:
     print(f"Processing user {user}")
@@ -53,7 +54,7 @@ for user in users:
 
         mfccs_features = np.concatenate((mfccs, delta_mfccs, delta2_mfccs))
 
-        output_file_name = "mfccs/"+Path(audio_file).stem+".csv"
+        output_file_name = output_directory + "/"+Path(audio_file).stem+".csv"
         output_file = open(output_file_name, "w")
         csvout = csv.writer(output_file, delimiter=',')
         csvout.writerows(mfccs_features)

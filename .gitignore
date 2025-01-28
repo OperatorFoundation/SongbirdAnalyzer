@@ -6,3 +6,5 @@ audio/AS*
 .idea/*
 .DS_Store
 charts/*
+mfccs/testing/*
+mfccs/training/*

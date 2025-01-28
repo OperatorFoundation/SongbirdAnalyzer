@@ -64,9 +64,9 @@ def writeRow(filename, writer):
     writer.writerow(result)
 
 users = os.listdir(sys.argv[1])
-mfccs = glob.glob(f"mfccs/*.csv")
+mfccs = glob.glob(f"{sys.argv[2]}/*.csv")
 
-resultsFile = open("results/results.csv", "w")
+resultsFile = open(sys.argv[3], "w")
 writer = csv.writer(resultsFile)
 
 for leftfilename in mfccs:
