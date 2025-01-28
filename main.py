@@ -1,15 +1,11 @@
 #%%
 # Import libraries
-import melAnalyzer
 from melAnalyzer import createMelFrom, createMelsFrom
 from mfccAnalyzer import create_mfcc_chart_from, create_mfcc_charts_from
 
-audioDirectory = "audio/"
+audioDirectory = "audio/Tests"
 audioFileExtension = ".wav"
 
-
-# filename = "Crocodile"
-# audioFile = audioDirectory + filename + audioFileExtension
 
 #%%
 # createMelFrom(audioFile, filename)

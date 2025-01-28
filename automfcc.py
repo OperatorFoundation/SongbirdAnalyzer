@@ -10,12 +10,13 @@ from pathlib import Path
 import sys
 
 max_files = 5
-users=os.listdir("audio")
+users=sys.argv[1]
+
 for user in users:
     print(f"Processing user {user}")
-    wavs = glob.glob(f"audio/{user}/*.wav")
+    wavs = glob.glob(f"audio/Tests/{user}/*.wav")
 
-# Limit to the first x wav files
+    # Limit to the first x wav files
     for index in range(max_files):
         wav = wavs[index]
         print(f"{wav}...")

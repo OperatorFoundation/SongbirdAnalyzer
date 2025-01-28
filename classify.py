@@ -4,6 +4,7 @@ from sklearn.metrics import mean_squared_error as rmse
 import os
 from pathlib import Path
 import numpy as np
+import sys
 
 def load(mfccfilename):
     print(f"{mfccfilename}...")
@@ -26,7 +27,8 @@ def process(leftfilename, rightfilename):
 
     return [leftuser, leftindex, rightuser, rightindex, error]
 
-users=os.listdir("audio")
+
+users=sys.argv[1]
 mfccs = glob.glob(f"mfccs/*.csv")
 
 writer = csv.writer(open("results/results.csv", "w"))
