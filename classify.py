@@ -34,7 +34,7 @@ writers = {}
 for leftfilename in mfccs:
     for rightfilename in mfccs:
         result = process(leftfilename, rightfilename)
-#        writer.writerow(result)
+        writer.writerow(result)
 
         leftuser = result[0]
         rightuser = result[2]
