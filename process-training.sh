@@ -1,4 +1,4 @@
-USERS_DIR=os.listdir("audio/Tests")
+USERS_DIR="audio/Tests"
 
 ./splitall.sh $USERS_DIR
 

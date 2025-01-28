@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 
 max_files = 5
-users=sys.argv[1]
+users = os.listdir(sys.argv[1])
 
 for user in users:
     print(f"Processing user {user}")

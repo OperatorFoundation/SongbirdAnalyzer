@@ -1,4 +1,5 @@
 import csv
+import os
 
 import librosa.display
 import matplotlib.pyplot as plt
@@ -6,7 +7,7 @@ import numpy as np
 from pathlib import Path
 import sys
 
-audio_file = sys.argv[1]
+audio_file = os.listdir(sys.argv[1])
 signal, sr = librosa.load(audio_file)
 
 mfccs = librosa.feature.mfcc(y=signal, n_mfcc=13, sr=sr)

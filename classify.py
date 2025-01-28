@@ -67,7 +67,7 @@ def process(leftfilename, rightfilename):
     return [leftuser, leftindex, rightuser, rightindex, error]
 
 
-users=sys.argv[1]
+users=os.listdir(sys.argv[1])
 mfccs = glob.glob(f"mfccs/*.csv")
 
 writer = csv.writer(open("results/results.csv", "w"))
