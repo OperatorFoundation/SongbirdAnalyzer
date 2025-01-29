@@ -65,11 +65,20 @@ def writeRow(filename, writer):
 
 users = os.listdir(sys.argv[1])
 mfccs = glob.glob(f"{sys.argv[2]}/*.csv")
-
 resultsFile = open(sys.argv[3], "w")
+
 writer = csv.writer(resultsFile)
 
-for leftfilename in mfccs:
-    writeRow(leftfilename, writer)
+# Write the header row
+# The first column is the speaker and the rest are MFCC features
+
+# Check an example file to see how many rows there will be
+mfcc_example = np.loadtxt(mfccs[0], delimiter=',').flatten()
+
+header = ["speaker"] + [f"MFCC_{i + 1}" for i in range(len(mfcc_example))]
+writer.writerow(header)
+
+for filename in mfccs:
+    writeRow(filename, writer)
 
 resultsFile.close()
