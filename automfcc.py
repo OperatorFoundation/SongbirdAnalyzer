@@ -27,7 +27,7 @@ for user in users:
         audio_file = wav
         signal, sr = librosa.load(audio_file)
 
-        mfccs_seq = librosa.feature.mfcc(y=signal, n_mfcc=12, sr=sr)
+        mfccs_seq = librosa.feature.mfcc(y=signal, n_mfcc=13, sr=sr)
         mfccs = list(mfccs_seq[0])
 
         delta_mfccs_seq = librosa.feature.delta(mfccs_seq)
