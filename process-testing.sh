@@ -1,7 +1,6 @@
 USERS_DIR="audio/tests"
-OUTPUT_DIR="mfccs/testing"
 RESULTS_FILE="results/testing.csv"
+START_INDEX=5
+MAX_FILES=5
 
-mkdir -p $OUTPUT_DIR
-python3 automfcc.py $USERS_DIR $OUTPUT_DIR
-python3 collate.py $USERS_DIR $OUTPUT_DIR $RESULTS_FILE
+python3 automfcc.py $USERS_DIR $RESULTS_FILE $START_INDEX $MAX_FILES

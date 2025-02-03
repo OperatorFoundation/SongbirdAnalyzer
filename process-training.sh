@@ -1,8 +1,7 @@
 USERS_DIR="audio/tests"
-OUTPUT_DIR="mfccs/training"
 RESULTS_FILE="results/training.csv"
+START_INDEX=0
+MAX_FILES=5
 
-mkdir -p $OUTPUT_DIR
-./splitall.sh $USERS_DIR
-python3 automfcc.py $USERS_DIR $OUTPUT_DIR
-python3 collate.py $USERS_DIR $OUTPUT_DIR $RESULTS_FILE
+#./splitall.sh $USERS_DIR
+python3 automfcc.py $USERS_DIR $RESULTS_FILE $START_INDEX $MAX_FILES
