@@ -11,8 +11,6 @@ import sys
 
 users = os.listdir(sys.argv[1])
 resultsFile = open(sys.argv[2], "w")
-start_index = int(sys.argv[3])
-max_files = int(sys.argv[4])
 csvout = csv.writer(resultsFile, delimiter=',')
 first_row = True
 
@@ -21,7 +19,7 @@ for user in users:
     wavs = glob.glob(f"audio/Tests/{user}/*.wav")
 
     # Limit to the first x wav files
-    for index in range(start_index, start_index + max_files):
+    for index in range(len(wavs)):
         wav = wavs[index]
         print(f"{wav}...")
         audio_file = wav
