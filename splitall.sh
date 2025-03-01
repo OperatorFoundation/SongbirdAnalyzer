@@ -1,7 +1,11 @@
 maxtime=15
 
-./split.sh $1/21525/21525-01.mp3 ${maxtime}
-./split.sh $1/23723/23723-01.mp3 ${maxtime}
-./split.sh $1/19839/19839-01.mp3 ${maxtime}
+for user in 21525 23723 19839; do
+  mkdir -p working/$user
 
-python3 clean.py $1
+  for file in $1/$user/*.mp3; do
+    ./split.sh $file ${maxtime} $2/$user
+  done
+
+  python3 clean.py $2/$user
+done

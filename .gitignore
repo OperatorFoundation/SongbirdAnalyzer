@@ -1,3 +1,6 @@
+songbird.pkl
+audio/
+working/
 images/*.png
 results/*.csv
 mfccs/*.csv

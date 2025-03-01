@@ -16,7 +16,7 @@ first_row = True
 
 for user in users:
     print(f"Processing user {user}")
-    wavs = glob.glob(f"audio/Tests/{user}/*.wav")
+    wavs = glob.glob(f"{sys.argv[1]}/{user}/*.wav")
 
     # Limit to the first x wav files
     for index in range(len(wavs)):
