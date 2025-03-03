@@ -3,6 +3,9 @@ RESULTS_FILE="results/training.csv"
 WORKING_DIR="working-training"
 MODEL_FILE="songbird.pkl"
 
+for user in 21525 23723 19839; do
+  mkdir -p USERS_DIR/$user
+
 pushd $USERS_DIR/21525
 wget -nc https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/anthem_doomed_youth_owen_librivox/anthem_doomed_youth_owen_librivox_64kb_mp3.zip
