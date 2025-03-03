@@ -1,6 +1,6 @@
-USERS_DIR="audio/tests"
+USERS_DIR="audio/training"
 RESULTS_FILE="results/training.csv"
-WORKING_DIR="working"
+WORKING_DIR="working-training"
 MODEL_FILE="songbird.pkl"
 
 pushd $USERS_DIR/21525
@@ -30,7 +30,6 @@ wget -nc https://www.archive.org/download/favourite_chapters_collection_002_libr
 wget -nc https://www.archive.org/download/federalist_papers_librivox/federalist_papers_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/fire_and_ice_librivox/fire_and_ice_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/greenmantle_0709_librivox/greenmantle_0709_librivox_64kb_mp3.zip
-wget -nc https://www.archive.org/download/andersenfairytalesvolume4_1402_librivox/andersenfairytalesvolume4_1402_librivox_64kb_mp3.zip
 unzip -u *.zip
 popd
 
@@ -41,7 +40,6 @@ wget -nc https://www.archive.org/download/anne_of_green_gables_librivox/anne_of_
 wget -nc https://www.archive.org/download/potter_treasury_librivox/potter_treasury_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/grimms_english_librivox/grimms_english_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/pride_and_prejudice_librivox/pride_and_prejudice_librivox_64kb_mp3.zip
-wget -nc https://www.archive.org/download/princess_of_mars_librivox/princess_of_mars_librivox_64kb_mp3.zip
 unzip -u *.zip
 rm emma_01_04_austen_64kb.mp3 # guest reader
 rm emma_02_11_austen_64kb.mp3 # guest reader
@@ -50,4 +48,3 @@ popd
 ./splitall.sh $USERS_DIR $WORKING_DIR
 python3 automfcc.py $WORKING_DIR $RESULTS_FILE
 python3 train.py $RESULTS_FILE $MODEL_FILE
-python3 predict.py $RESULTS_FILE $MODEL_FILE

@@ -1,7 +1,5 @@
 import csv
 import glob
-from operator import truediv
-
 import librosa.feature
 import librosa.display
 import matplotlib.pyplot as plt
