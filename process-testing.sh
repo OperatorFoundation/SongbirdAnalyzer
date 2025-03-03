@@ -3,6 +3,11 @@ RESULTS_FILE="results/tests.csv"
 WORKING_DIR="working-tests"
 MODEL_FILE="songbird.pkl"
 
+# Make sure we have directories for our users
+for user in 21525 23723 19839; do
+  mkdir -p $USERS_DIR/$user
+  done
+
 pushd $USERS_DIR/21525
 wget -nc https://www.archive.org/download/diary_of_nobody_librivox/diary_of_nobody_librivox_64kb_mp3.zip
 unzip -u *.zip

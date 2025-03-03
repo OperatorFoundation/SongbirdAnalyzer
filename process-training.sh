@@ -3,6 +3,7 @@ RESULTS_FILE="results/training.csv"
 WORKING_DIR="working-training"
 MODEL_FILE="songbird.pkl"
 
+# Make sure we have directories for our users
 for user in 21525 23723 19839; do
   mkdir -p $USERS_DIR/$user
   done
@@ -14,7 +15,9 @@ wget -nc https://www.archive.org/download/art_and_heart_librivox/art_and_heart_l
 wget -nc https://www.archive.org/download/psalms_selections_librivox/psalms_selections_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/crome_yellow_librivox/crome_yellow_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/death_be_not_proud_librivox/death_be_not_proud_librivox_64kb_mp3.zip
-unzip -u *.zip
+for zip in *.zip; do
+  unzip -u "$zip"
+done
 popd
 
 pushd $USERS_DIR/23723
@@ -34,7 +37,9 @@ wget -nc https://www.archive.org/download/favourite_chapters_collection_002_libr
 wget -nc https://www.archive.org/download/federalist_papers_librivox/federalist_papers_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/fire_and_ice_librivox/fire_and_ice_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/greenmantle_0709_librivox/greenmantle_0709_librivox_64kb_mp3.zip
-unzip -u *.zip
+for zip in *.zip; do
+  unzip -u "$zip"
+done
 popd
 
 pushd $USERS_DIR/19839
@@ -44,7 +49,9 @@ wget -nc https://www.archive.org/download/anne_of_green_gables_librivox/anne_of_
 wget -nc https://www.archive.org/download/potter_treasury_librivox/potter_treasury_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/grimms_english_librivox/grimms_english_librivox_64kb_mp3.zip
 wget -nc https://www.archive.org/download/pride_and_prejudice_librivox/pride_and_prejudice_librivox_64kb_mp3.zip
-unzip -u *.zip
+for zip in *.zip; do
+  unzip -u "$zip"
+done
 rm emma_01_04_austen_64kb.mp3 # guest reader
 rm emma_02_11_austen_64kb.mp3 # guest reader
 popd
