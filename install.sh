@@ -1,4 +1,2 @@
-sudo apt install unzip
-sudo apt install sox libsox-fmt-mp3
-sudo apt install python-pip3
+sudo apt install -y unzip sox libsox-fmt-mp3 python3-pip
 sudo pip3 install -r "requirements.txt"
