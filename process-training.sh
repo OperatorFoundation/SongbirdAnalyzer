@@ -5,6 +5,7 @@ MODEL_FILE="songbird.pkl"
 
 for user in 21525 23723 19839; do
   mkdir -p USERS_DIR/$user
+  done
 
 pushd $USERS_DIR/21525
 wget -nc https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
