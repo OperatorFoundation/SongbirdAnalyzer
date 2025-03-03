@@ -1,7 +1,7 @@
 maxtime=15
 
 for user in 21525 23723 19839; do
-  mkdir -p working/$user
+  mkdir -p $2/$user
 
   for file in $1/$user/*.mp3; do
     ./split.sh $file ${maxtime} $2/$user
