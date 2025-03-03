@@ -4,7 +4,7 @@ WORKING_DIR="working-training"
 MODEL_FILE="songbird.pkl"
 
 for user in 21525 23723 19839; do
-  mkdir -p USERS_DIR/$user
+  mkdir -p $USERS_DIR/$user
   done
 
 pushd $USERS_DIR/21525
