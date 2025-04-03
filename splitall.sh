@@ -7,5 +7,5 @@ for user in 21525 23723 19839; do
     ./split.sh $file ${maxtime} $2/$user
   done
 
-  python3 clean.py $2/$user
+#  python3 clean.py $2/$user
 done
