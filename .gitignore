@@ -2,7 +2,6 @@ songbird.pkl
 audio/
 working/
 images/*.png
-results/*.csv
 mfccs/*.csv
 audio/Tests/**/*.wav
 audio/AS*
@@ -11,3 +10,5 @@ audio/AS*
 charts/*
 mfccs/testing/*
 mfccs/training/*
+/working-training/*
+results/*

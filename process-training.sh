@@ -35,3 +35,5 @@ popd
 ./splitall.sh $USERS_DIR $WORKING_DIR
 python3 automfcc.py $WORKING_DIR $RESULTS_FILE
 python3 train.py $RESULTS_FILE $TEST_DATA $MODEL_FILE
+
+
