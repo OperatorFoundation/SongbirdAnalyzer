@@ -12,3 +12,4 @@ mfccs/testing/*
 mfccs/training/*
 /working-training/*
 results/*
+/working-evaluation/*

@@ -1,8 +1,9 @@
+import os
 import sys
-from pyexpat import features
 
 import pandas as pd
 import joblib
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
@@ -29,7 +30,11 @@ def split_data(data_frame, first_column='speaker'):
 
     return features_data_frame, target_data_frame
 
+
+# Main training process
+
 input_file = sys.argv[1]
+input_prefix = os.path.splitext(input_file)[0]
 output_prefix = sys.argv[2]
 model_file = sys.argv[3]
 
@@ -38,29 +43,29 @@ df = pd.read_csv(input_file, delimiter=',')
 print(f"Loaded data with {df.shape[0]} rows and {df.shape[1]} columns")
 
 # split it into two tables
-x, y = split_data(df)
+mfccs, speaker = split_data(df)
 
 # convert y to the correct format
-if isinstance(y, pd.DataFrame) and y.shape[1] == 1:
-    y = y.iloc[:, 0]
+if isinstance(speaker, pd.DataFrame) and speaker.shape[1] == 1:
+    speaker = speaker.iloc[:, 0]
 
 # Check for categorical features in x
-categorical_cols = x.select_dtypes(include=['object', 'category']).columns
+categorical_cols = mfccs.select_dtypes(include=['object', 'category']).columns
 if not categorical_cols.empty:
     print(f"Warning: Found categorical columns: {list(categorical_cols)}")
     print("Consider encoding these columns before training")
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
-print(f"Train set: {x_train.shape[0]} samples, Test set: {x_test.shape[0]} samples")
+features_train, features_test, target_train, target_test = train_test_split(mfccs, speaker, test_size=0.1, random_state=42)
+print(f"Train set: {features_train.shape[0]} samples, Test set: {features_test.shape[0]} samples")
 
-x_train.to_csv(input_file +".x", index=False)
-y_train.to_csv(input_file +".y", index=False)
-x_test.to_csv(output_prefix +"_x.csv", index=False)
-y_test.to_csv(output_prefix +"_y.csv", index=False)
+features_train.to_csv(input_prefix + "_mfccs.csv", index=False)
+target_train.to_csv(input_prefix + "_speakers.csv", index=False)
+features_test.to_csv(output_prefix + "_mfccs.csv", index=False)
+target_test.to_csv(output_prefix + "_speakers.csv", index=False)
 print("Saved train and test splits to CSV files")
 
 model = RandomForestClassifier()
-model.fit(x_train, y_train)
+model.fit(features_train, target_train)
 
 print(f'Saving {model_file}...')
 joblib.dump(model, model_file)
