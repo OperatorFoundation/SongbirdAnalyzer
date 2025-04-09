@@ -84,9 +84,17 @@ echo "Current audio input device: $(SwitchAudioSource -c -t input)"
 echo "Current audio output device: $(SwitchAudioSource -c -t output)"
 echo "Teensy audio configuration complete!"
 
-# Make sure we have directories for our users
+
+############################################
+#                                          #
+#       Evaluation Business                #
+#                                          #
+############################################
+
 for user in 21525 23723 19839; do
   mkdir -p $WORKING_DIR/$user # Make sure we have an evaluation directory for each user
+
+  # FIXME: Only evaluate files as indicated by the testing csv
 
   for file in $FILES_DIR/$user/*.wav; do
 
