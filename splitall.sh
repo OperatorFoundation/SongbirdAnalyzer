@@ -30,5 +30,4 @@ for SPEAKER_ID in 21525 23723 19839; do
     echo "Processed ${MP3_COUNT} files for speaker ID ${SPEAKER_ID}"
   fi
 
-  # python3 clean.py ${WORKING_DIR}/$SPEAKER_ID
 done

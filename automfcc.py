@@ -89,7 +89,7 @@ def create_visualization(features, audio_file_path, sample_rate):
 
 def generate_csv_header(features):
     """Generate CSV header row based on feature dimensions"""
-    header = ["speaker"]
+    header = ["speaker", "wav_file"]
 
     # Add column names for each feature type
     for name, feature_list in [
@@ -119,8 +119,11 @@ def process_audio_file(audio_file_path, speaker_id, csv_writer, first_row_flag):
             csv_writer.writerow(header)
             first_row_flag = False
 
+        # Get just the file name without the path
+        wav_file_name = os.path.basename( audio_file_path )
+
         # Write feature values for this file
-        row_data = [speaker_id] + features[MFCCS] + features[DELTA_MFCCS] + features[DELTA2_MFCCS]
+        row_data = [speaker_id, wav_file_name] + features[MFCCS] + features[DELTA_MFCCS] + features[DELTA2_MFCCS]
         csv_writer.writerow(row_data)
         return first_row_flag
 

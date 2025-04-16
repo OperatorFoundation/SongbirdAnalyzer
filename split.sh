@@ -6,7 +6,6 @@ MAX_TIME="$2"
 OUTPUT_DIR="$3"
 
 BASE_NAME=$(basename "${INPUT_FILE%.*}")
-#`BASE_NAME ${INPUT_FILE%.*}`
 
 # Use sox to split the audio file
 # - Convert to mono (-c 1)

@@ -10,7 +10,7 @@
 ###############################################################
 END_COMMENT
 
-maxtime=10
+maxtime=15
 
 USERS_DIR="audio/training"
 RESULTS_FILE="results/evaluation.csv"
