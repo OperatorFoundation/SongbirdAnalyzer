@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import time
 
 import pandas as pd
 import joblib
@@ -30,6 +31,49 @@ def split_data(data_frame, first_column='speaker'):
     features_data_frame = data_frame.drop(columns=[first_column]).copy()
 
     return features_data_frame, target_data_frame
+
+def train_with_progress(features_data_frame, target_data_frame, n_estimators=100):
+    print(f"Training RandomForestClassifier with {n_estimators} trees...")
+
+    # Create the model
+    model = RandomForestClassifier(n_estimators=n_estimators, verbose=0)
+
+    # Get start time
+    start_time = time.time()
+
+    # Simple spinner animation
+    spinner = ['-', '\\', '|', '/']
+    i = 0
+
+    # Start a thread to update the spinner
+    import threading
+
+    stop_spinner = False
+
+    def spin():
+        i = 0
+        while not stop_spinner:
+            sys.stdout.write('\r' + f"Training model... {spinner[i % len(spinner)]}")
+            sys.stdout.flush()
+            i += 1
+            time.sleep(0.2)
+    # Start the spinner in a seperate thread
+    spinner_thread = threading.Thread(target=spin)
+    spinner_thread.deamon = True
+    spinner_thread.start()
+
+    try:
+        # Train the model
+        model.fit(features_data_frame, target_data_frame)
+    finally:
+        # Stop the spinner
+        stop_spinner = True
+        spinner_thread.join(timeout=1)
+        training_time = time.time() - start_time
+        sys.stdout.write('\r' + f"Model training completed in {training_time:.2f} seconds!      \n")
+        sys.stdout.flush()
+
+    return model
 
 
 # Main training process
@@ -143,8 +187,7 @@ if files_not_found > 0:
     print(f"⚠️ WARNING: Could not find {files_not_found} WAV files for test samples")
 
 # Train the model
-model = RandomForestClassifier()
-model.fit(features_train, target_train)
+model = train_with_progress(features_train, target_train)
 
 print(f'Saving {model_file}...')
 joblib.dump(model, model_file)

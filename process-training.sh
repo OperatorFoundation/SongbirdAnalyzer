@@ -1,7 +1,7 @@
 USERS_DIR="audio/training"
 RESULTS_FILE="results/training.csv"
 WORKING_DIR="working-training"
-WAV_SOURCE_DIRECTORY="working_training"
+WAV_SOURCE_DIRECTORY="working-training"
 MODEL_FILE="songbird.pkl"
 TEST_DATA="results/testing"
 #
@@ -32,7 +32,7 @@ TEST_DATA="results/testing"
 #rm emma_01_04_austen_64kb.mp3 # guest reader
 #rm emma_02_11_austen_64kb.mp3 # guest reader
 #popd
-
+#
 #./splitall.sh $USERS_DIR $WORKING_DIR
 #python3 automfcc.py $WORKING_DIR $RESULTS_FILE
 python3 train.py $RESULTS_FILE $TEST_DATA $MODEL_FILE $WAV_SOURCE_DIRECTORY
