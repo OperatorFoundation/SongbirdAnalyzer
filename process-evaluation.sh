@@ -169,7 +169,7 @@ for user in ${users[@]}; do
   user_files=()
   while IFS= read -r file_path; do
     user_files+=("$file_path")
-  done < <(find $FILES_DIR/$user -name "*.wav" | sort)
+  done < <(find $FILES_DIR/$user -name "*.wav")
 
    # Process each file with a counter for progress tracking
    current_file=0
