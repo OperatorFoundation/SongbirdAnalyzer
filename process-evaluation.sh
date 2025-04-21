@@ -25,11 +25,41 @@ TRACKING_FILE="modified_audio_tracking_report.txt"
 # Track if we're stopping early
 EARLY_TERMINATION=0
 
-set_audio_to_defaults() {
+# Track original audio devices
+ORIGINAL_INPUT=""
+ORIGINAL_OUTPUT=""
+
+save_original_audio_sources()
+{
   if command -v SwitchAudioSource &>/dev/null; then
-    echo "Restoring default audio devices..."
-    SwitchAudioSource -t "input" -s "Built-in Microphone" 2>/dev/null
-    SwitchAudioSource -t "output" -s "Built-in Output" 2>/dev/null
+    ORIGINAL_INPUT=$(SwitchAudioSource -c -t input)
+    ORIGINAL_OUTPUT=$(SwitchAudioSource -c -t output)
+    echo "Saved original audio settings:"
+    echo "  - Input: $ORIGINAL_INPUT"
+    echo "  - Output: $ORIGINAL_OUTPUT"
+  fi
+}
+
+restore_original_audio_sources()
+{
+  if command -v SwitchAudioSource &>/dev/null; then
+    echo "Restoring original audio devices..."
+
+    if [ -n "$ORIGINAL_INPUT" ]; then
+      echo "  - Setting input back to : $ORIGINAL_INPUT"
+      SwitchAudioSource -t "input" -s "$ORIGINAL_INPUT" 2>/dev/null
+    else
+      echo "  - No original input device saved, using Built-in Microphone"
+      SwitchAudioSource -t "input" -s "Built-in Microphone" 2>/dev/null
+    fi
+
+    if [ -n "$ORIGINAL_OUTPUT" ]; then
+      echo "  - Setting output back to: $ORIGINAL_OUTPUT"
+      SwitchAudioSource -t "output" -s "$ORIGINAL_OUTPUT" 2>/dev/null
+    else
+      echo "  - No original output device saved, using Built-in Output"
+      SwitchAudioSource -t "output" -s "Built-in Output" 2>/dev/null
+    fi
   fi
 }
 
@@ -52,8 +82,8 @@ cleanup() {
   echo "PROCESS TERMINATED EARLY: $(date)" >> $TRACKING_FILE
   echo "----------------------------------------" >> $TRACKING_FILE
 
-  # Return audio devices to default settings if possible
-  set_audio_to_defaults
+  # Return audio devices to original settings if possible
+  restore_original_audio_sources
 
   echo "Termination cleanup complete. Partial results saved."
   exit 1
@@ -96,6 +126,9 @@ if ! command -v SwitchAudioSource &>/dev/null; then
   exit 1
 fi
 
+# Save original audio sources before changing anything
+save_original_audio_sources
+
 check_audio_device()
 {
   # Returns true (0) if device exists, false (1) otherwise
@@ -105,7 +138,7 @@ check_audio_device()
 
 # Check If Audio Device Exists
 if ! check_audio_device; then
-  echo "ERROR: Audio device '$DEVICE_DEVICE_NAME' not found."
+  echo "ERROR: Audio device '$DEVICE_NAME' not found."
   echo "Available audio devices: "
   SwitchAudioSource -a
   exit 1
@@ -145,36 +178,51 @@ total_processed=0
 
 modes=("n" "p" "w" "a")
 mode_names=("Noise" "PitchShift" "Wave" "All")
-users=("21525" "23723" "19839")
+speakers=("21525" "23723" "19839")
 
-# Process each user in the array
-for user in ${users[@]}; do
-  mkdir -p $WORKING_DIR/$user # Make sure we have an evaluation directory for each user
+# Delete existing directories before starting a new run
+echo "Cleaning previous output directories..."
+if [ -d "$WORKING_DIR" ]; then
+  rm -rf "$WORKING_DIR"
+  echo "Deleted existing directory $WORKING_DIR"
+fi
 
-  # Initialize counters for this user
-  total_files_created[$user]=0
+# Create directory structure organized by mode/speaker
+for mode_index in "${!modes[@]}"; do
+  mode_name="${mode_names[$mode_index]}"
 
-    # Initialize mode-specific counters for this user
+  for speaker in "${speakers[@]}"; do
+    mkdir -p "$WORKING_DIR/$mode_name/$speaker"
+    echo "Created directory: $WORKING_DIR/$mode_name/$user"
+  done
+done
+
+# Process each speaker in the array
+for speaker in ${speakers[@]}; do
+  # Initialize counters for this speaker
+  total_files_created[$speaker]=0
+
+  # Initialize mode-specific counters for this speaker
   for mode in "${modes[@]}"; do
-    files_modified["$user-$mode"]=0
+    files_modified["$speaker-$mode"]=0
   done
 
-  # Count number of source files for this user
-  source_file_count=$(find $FILES_DIR/$user -name "*.wav" | wc -l | tr -d ' ')
+  # Count number of source files for this speaker
+  source_file_count=$(find $FILES_DIR/$speaker -name "*.wav" | wc -l | tr -d ' ')
   echo ""
   echo "========================================================="
-  echo "USER $user: Found $source_file_count source files to process"
+  echo "SPEAKER $speaker: Found $source_file_count source files to process"
   echo "========================================================="
 
-  # Get all files for this user into an array
-  user_files=()
+  # Get all files for this speaker into an array
+  speaker_files=()
   while IFS= read -r file_path; do
-    user_files+=("$file_path")
-  done < <(find $FILES_DIR/$user -name "*.wav")
+    speaker_files+=("$file_path")
+  done < <(find $FILES_DIR/$speaker -name "*.wav")
 
    # Process each file with a counter for progress tracking
    current_file=0
-   for file in "${user_files[@]}"; do
+   for file in "${speaker_files[@]}"; do
      # Check if we're terminating early
      if [ $EARLY_TERMINATION -eq 1 ]; then
        echo "Skipping the remaining files due to termination request"
@@ -197,7 +245,7 @@ for user in ${users[@]}; do
       echo $mode > $device
       basename=$(basename "$file" ".wav")
       filename=$basename-$mode_name.wav
-      output_path="$WORKING_DIR/$user/$filename"
+      output_path="$WORKING_DIR/$mode_name/$speaker/$filename"
 
       # Play the file and record
       echo "  Mode: $mode_name ($mode) [$(($mode_index+1)) of ${#modes[@]}]"
@@ -245,7 +293,7 @@ for user in ${users[@]}; do
         if [ $filesize -gt 1024 ]; then
           echo "Recording complete and verified: $output_path ($filesize bytes)"
           ((files_modified["$user_$mode"]++))
-          ((total_files_created[$user]++))
+          ((total_files_created[$speaker]++))
           ((total_processed++))
                   else
           echo "⚠️ WARNING: Recording may be corrupt or empty: $output_path ($filesize bytes)"
@@ -264,13 +312,13 @@ for user in ${users[@]}; do
 
   # Log speaker summary to tracking file
   echo "" >> $TRACKING_FILE
-  echo "USER $user SUMMARY:" >> $TRACKING_FILE
-  echo "Total files created: ${total_files_created[$user]}" >> $TRACKING_FILE
+  echo "SPEAKER $speaker SUMMARY:" >> $TRACKING_FILE
+  echo "Total files created: ${total_files_created[$speaker]}" >> $TRACKING_FILE
 
-  for mode_index in "$!modes[@]"; do
+  for mode_index in "${!modes[@]}"; do
     mode="${modes[$mode_index]}"
     mode_name="${mode_names[$mode_index]}"
-    echo "  - $mode_name mode: ${files_modified["$user-$mode"]}" >> $TRACKING_FILE
+    echo "  - $mode_name mode: ${files_modified["$speaker-$mode"]}" >> $TRACKING_FILE
   done
   echo "----------------------------------------" >> $TRACKING_FILE
 done
@@ -280,14 +328,14 @@ echo "" >> $TRACKING_FILE
 echo "OVERALL SUMMARY:" >> $TRACKING_FILE
 echo "Total audio files processed: $total_processed" >> $TRACKING_FILE
 
-# Calculate totals by mode across all users
+# Calculate totals by mode across all speakers
 for mode_index in "${!modes[@]}"; do
   mode="${modes[$mode_index]}"
   mode_name="${mode_names[$mode_index]}"
   mode_total=0
 
-  for user in ${users[@]}; do
-    mode_total=$((mode_total + files_modified["$user-$mode"]))
+  for speaker in ${speakers[@]}; do
+    mode_total=$((mode_total + files_modified["$speaker-$mode"]))
   done
 
   echo "Total files in $mode_name mode: $mode_total" >> $TRACKING_FILE
@@ -316,13 +364,13 @@ if [ $EARLY_TERMINATION -eq 1 ]; then
   echo "⚠️ PROCESS WAS TERMINATED EARLY"
 fi
 echo "Total files processed: $total_processed"
-for user in "${users[@]}"; do
+for speaker in "${speakers[@]}"; do
   # Calculate expected number of files (source files × number of modes)
-  source_count=$(find $FILES_DIR/$user -name "*.wav" | wc -l | tr -d ' ')
+  source_count=$(find $FILES_DIR/$speaker -name "*.wav" | wc -l | tr -d ' ')
   expected=$((source_count * ${#modes[@]}))
 
   # Get actual count
-  actual=${total_files_created[$user]}
+  actual=${total_files_created[$speaker]}
 
   # Calculate completion percentage
   if [ $expected -eq 0 ]; then
@@ -331,13 +379,17 @@ for user in "${users[@]}"; do
     percentage=$((actual * 100 / expected))
   fi
 
-  echo "User $user: ${total_files_created[$user]} files created ($percentage% of expected $expected files)"
+  echo "User $speaker: ${total_files_created[$speaker]} files created ($percentage% of expected $expected files)"
   for mode_index in "${!modes[@]}"; do
     mode="${modes[$mode_index]}"
     mode_name="${mode_names[$mode_index]}"
-    echo "  - $mode_name mode: ${files_modified["$user-$mode"]}"
+    echo "  - $mode_name mode: ${files_modified["$speaker-$mode"]}"
   done
 done
 echo ""
 echo "Check $TRACKING_FILE for detailed report"
 echo "==============================================="
+
+# Return audio devices to original settings at the end of processing
+restore_original_audio_sources
+echo "Evaluation completed successfully!"
