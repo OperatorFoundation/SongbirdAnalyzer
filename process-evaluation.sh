@@ -1,3 +1,4 @@
+#!/opt/homebrew/bin/bash
 
 : <<'BOOP'
 ###############################################################
@@ -10,7 +11,7 @@
 ###############################################################
 BOOP
 
-#!/bin/bash
+
 
 MAX_TIME=15
 USERS_DIR="audio/training"
@@ -27,8 +28,8 @@ EARLY_TERMINATION=0
 set_audio_to_defaults() {
   if command -v SwitchAudioSource &>/dev/null; then
     echo "Restoring default audio devices..."
-    SwitchAudioSource -t "input" -s "Built-in Microphone" 2>dev/null
-    SwitchAudioSource -t "output" -s "Built-in Output" 2>dev/null
+    SwitchAudioSource -t "input" -s "Built-in Microphone" 2>/dev/null
+    SwitchAudioSource -t "output" -s "Built-in Output" 2>/dev/null
   fi
 }
 
@@ -206,6 +207,9 @@ for user in ${users[@]}; do
         echo "  Skipping this mode due to termination request."
         continue
       fi
+
+      echo "  Current audio input device: $(SwitchAudioSource -c -t input)"
+      echo "  Current audio output device: $(SwitchAudioSource -c -t output)"
 
       afplay $file &
       afplay_pid=$!

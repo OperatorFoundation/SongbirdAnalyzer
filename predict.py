@@ -55,8 +55,11 @@ def main():
         accuracy = accuracy_score(target, predictions)
         print(f"\n🎯 Accuracy: {accuracy:.4f}")
 
-        # Generate classifaction report
+        # Generate classification report
         print("\nClassification report:")
+        print("=======================")
+        print(f"Target: {target}")
+        print(f"Predictions: {predictions}")
         print(classification_report(target, predictions))
 
         # Generate confusion matrix
