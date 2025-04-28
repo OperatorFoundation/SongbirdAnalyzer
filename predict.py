@@ -14,8 +14,6 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-from train import output_prefix
-
 
 def process_data(data_prefix, model_file, mode=None):
     """
@@ -82,6 +80,15 @@ def process_data(data_prefix, model_file, mode=None):
 
     # Make predictions
     try:
+        exclude_columns = []
+        if "wav_file" in features.columns:
+            exclude_columns.append("wav_file")
+        if "speaker" in features.columns:
+            exclude_columns.append("speaker")
+        if "mode" in features.columns:
+            exclude_columns.append("mode")
+
+        features = features.drop(columns=exclude_columns)
         predictions = model.predict(features)
 
         # Calculate accuracy
@@ -146,24 +153,28 @@ def main():
         print("Usage: python predict.py <data_prefix> <model_file>")
         sys.exit(1)
 
-    data_prefix = sys.argv[1]
+    evaluation_file = sys.argv[1]
     model_file = sys.argv[2]
+    data_prefix = evaluation_file.replace('.csv', '')
+    testing_file_prefix = "results/testing"
+    mode_names = ["Noise", "PitchShift", "Wave", "All"]
 
     # First, process the combined data
     combined_result = process_data(data_prefix, model_file)
+    unmodified_result = process_data(testing_file_prefix, model_file)
 
     # Get list of mode directories from the working directory
-    mode_dirs = []
-    if os.path.isdir(data_prefix):
-        try:
-            mode_dirs = [d for d in os.listdir(data_prefix)
-                         if os.path.isdir(os.path.join(data_prefix, d))]
-        except Exception as error:
-            print(f"Warning: Could not access directory {data_prefix}: {error}")
+    # mode_dirs = []
+    # if os.path.isdir(data_prefix):
+    #     try:
+    #         mode_dirs = [d for d in os.listdir(data_prefix)
+    #                      if os.path.isdir(os.path.join(data_prefix, d))]
+    #     except Exception as error:
+    #         print(f"Warning: Could not access directory {data_prefix}: {error}")
 
     # Process each mode
     mode_results = []
-    for mode in mode_dirs:
+    for mode in mode_names:
         # Check if mode-specific files exist
         mfcc_file = f"{data_prefix}_{mode}_mfccs.csv"
         if os.path.exists(mfcc_file):
@@ -183,6 +194,9 @@ def main():
         all_results = []
         if combined_result:
             all_results.append(combined_result)
+        if unmodified_result:
+            all_results.append(unmodified_result)
+
         all_results.extend(mode_results)
 
         # Display and save comparison

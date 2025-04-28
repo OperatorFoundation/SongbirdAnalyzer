@@ -292,7 +292,7 @@ for speaker in ${speakers[@]}; do
 
         if [ $filesize -gt 1024 ]; then
           echo "Recording complete and verified: $output_path ($filesize bytes)"
-          ((files_modified["$user_$mode"]++))
+          ((files_modified["$speaker-$mode"]++))
           ((total_files_created[$speaker]++))
           ((total_processed++))
                   else
