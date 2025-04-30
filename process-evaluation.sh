@@ -12,8 +12,7 @@
 BOOP
 
 
-
-MAX_TIME=15
+MAX_TIME=10
 USERS_DIR="audio/training"
 RESULTS_FILE="results/evaluation.csv"
 FILES_DIR="results/testing_wav"
@@ -28,6 +27,18 @@ EARLY_TERMINATION=0
 # Track original audio devices
 ORIGINAL_INPUT=""
 ORIGINAL_OUTPUT=""
+
+# Initialize Counters
+declare -A total_files_created
+declare -A files_modified
+total_processed=0
+
+modes=("n" "p" "w" "a")
+mode_names=("Noise" "PitchShift" "Wave" "All")
+speakers=("21525" "23723" "19839")
+
+# Register signal handlers
+trap cleanup SIGINT SIGTERM SIGHUP
 
 save_original_audio_sources()
 {
@@ -103,32 +114,6 @@ find_teensy_device() {
   echo "$device_list" | head -n1
 }
 
-device=$(find_teensy_device)
-
-# check if the device was found
-if [ -z "$device" ]; then
-  echo "⚠️ ERROR: Could not find a Teensy device. Is it connected?"
-  exit 1
-else
-  echo "Found Teensy device at: $device"
-fi
-
-# Configure serial communication settings
-# 115200 - Set baud rate to 115200 bps
-# cs8    - 8 data bits
-# -cstopb - 1 stop bit (disable 2 stop bits)
-# -parenb - No parity bit
-stty -f $device 115200 cs8 -cstopb -parenb
-
-# Check if SwitchAudioSource is installed
-if ! command -v SwitchAudioSource &>/dev/null; then
-  echo "ERROR: SwitchAudioSource not found. Install it with: brew install switchaudio-osx"
-  exit 1
-fi
-
-# Save original audio sources before changing anything
-save_original_audio_sources
-
 check_audio_device()
 {
   # Returns true (0) if device exists, false (1) otherwise
@@ -136,69 +121,15 @@ check_audio_device()
   return $?
 }
 
-# Check If Audio Device Exists
-if ! check_audio_device; then
-  echo "ERROR: Audio device '$DEVICE_NAME' not found."
-  echo "Available audio devices: "
-  SwitchAudioSource -a
-  exit 1
-fi
+process_all_speakers_audio()
+{
+  # Create a report for tracking our progress
+  echo "FILE MODIFICATION TRACKING REPORT" > $TRACKING_FILE
+  echo "Generated on $(date)" >> $TRACKING_FILE
+  echo "----------------------------------------" >> $TRACKING_FILE
 
-# Set Teensy as the audio input device
-echo "Setting $DEVICE_NAME as audio input device"
-SwitchAudioSource -t "input" -s "$DEVICE_NAME"
-
-echo "Setting $DEVICE_NAME as audio output device..."
-SwitchAudioSource -t "output" -s "$DEVICE_NAME"
-
-# Verify that the settings were applied
-echo "Current audio input device: $(SwitchAudioSource -c -t input)"
-echo "Current audio output device: $(SwitchAudioSource -c -t output)"
-echo "Teensy audio configuration complete!"
-
-
-############################################
-#                                          #
-#       Evaluation Business                #
-#                                          #
-############################################
-
-# Register signal handlers
-trap cleanup SIGINT SIGTERM SIGHUP
-
-# Create a report for tracking our progress
-echo "FILE MODIFICATION TRACKING REPORT" > $TRACKING_FILE
-echo "Generated on $(date)" >> $TRACKING_FILE
-echo "----------------------------------------" >> $TRACKING_FILE
-
-# Initialize Counters
-declare -A total_files_created
-declare -A files_modified
-total_processed=0
-
-modes=("n" "p" "w" "a")
-mode_names=("Noise" "PitchShift" "Wave" "All")
-speakers=("21525" "23723" "19839")
-
-# Delete existing directories before starting a new run
-echo "Cleaning previous output directories..."
-if [ -d "$WORKING_DIR" ]; then
-  rm -rf "$WORKING_DIR"
-  echo "Deleted existing directory $WORKING_DIR"
-fi
-
-# Create directory structure organized by mode/speaker
-for mode_index in "${!modes[@]}"; do
-  mode_name="${mode_names[$mode_index]}"
-
-  for speaker in "${speakers[@]}"; do
-    mkdir -p "$WORKING_DIR/$mode_name/$speaker"
-    echo "Created directory: $WORKING_DIR/$mode_name/$user"
-  done
-done
-
-# Process each speaker in the array
-for speaker in ${speakers[@]}; do
+  # Process each speaker in the array
+  for speaker in ${speakers[@]}; do
   # Initialize counters for this speaker
   total_files_created[$speaker]=0
 
@@ -308,6 +239,7 @@ for speaker in ${speakers[@]}; do
       # Log individual file results
       echo "  - $basename ($mode): $file_status" >> $TRACKING_FILE
     done
+    echo "---------------------------------------------------------"
   done
 
   # Log speaker summary to tracking file
@@ -323,26 +255,104 @@ for speaker in ${speakers[@]}; do
   echo "----------------------------------------" >> $TRACKING_FILE
 done
 
-# Log grand totals to tracking file
-echo "" >> $TRACKING_FILE
-echo "OVERALL SUMMARY:" >> $TRACKING_FILE
-echo "Total audio files processed: $total_processed" >> $TRACKING_FILE
+  # Log grand totals to tracking file
+  echo "" >> $TRACKING_FILE
+  echo "OVERALL SUMMARY:" >> $TRACKING_FILE
+  echo "Total audio files processed: $total_processed" >> $TRACKING_FILE
 
-# Calculate totals by mode across all speakers
-for mode_index in "${!modes[@]}"; do
-  mode="${modes[$mode_index]}"
-  mode_name="${mode_names[$mode_index]}"
-  mode_total=0
+  # Calculate totals by mode across all speakers
+  for mode_index in "${!modes[@]}"; do
+    mode="${modes[$mode_index]}"
+    mode_name="${mode_names[$mode_index]}"
+    mode_total=0
 
-  for speaker in ${speakers[@]}; do
-    mode_total=$((mode_total + files_modified["$speaker-$mode"]))
+    for speaker in ${speakers[@]}; do
+      mode_total=$((mode_total + files_modified["$speaker-$mode"]))
+    done
+
+    echo "Total files in $mode_name mode: $mode_total" >> $TRACKING_FILE
   done
 
-  echo "Total files in $mode_name mode: $mode_total" >> $TRACKING_FILE
-done
+  echo "" >> $TRACKING_FILE
+  echo "Tracking report saved to: $TRACKING_FILE"
 
-echo "" >> $TRACKING_FILE
-echo "Tracking report saved to: $TRACKING_FILE"
+}
+
+setup_working_directory()
+{
+  # Delete existing directories before starting a new run
+  echo "Cleaning previous output directories..."
+  if [ -d "$WORKING_DIR" ]; then
+    rm -rf "$WORKING_DIR"
+    echo "Deleted existing directory $WORKING_DIR"
+  fi
+
+  # Create directory structure organized by mode/speaker
+  for mode_index in "${!modes[@]}"; do
+    mode_name="${mode_names[$mode_index]}"
+
+    for speaker in "${speakers[@]}"; do
+      mkdir -p "$WORKING_DIR/$mode_name/$speaker"
+      echo "Created directory: $WORKING_DIR/$mode_name/$user"
+    done
+  done
+}
+
+device=$(find_teensy_device)
+
+# check if the device was found
+if [ -z "$device" ]; then
+  echo "⚠️ ERROR: Could not find a Teensy device. Is it connected?"
+  exit 1
+else
+  echo "Found Teensy device at: $device"
+fi
+
+# Configure serial communication settings
+# 115200 - Set baud rate to 115200 bps
+# cs8    - 8 data bits
+# -cstopb - 1 stop bit (disable 2 stop bits)
+# -parenb - No parity bit
+stty -f $device 115200 cs8 -cstopb -parenb
+
+# Check if SwitchAudioSource is installed
+if ! command -v SwitchAudioSource &>/dev/null; then
+  echo "ERROR: SwitchAudioSource not found. Install it with: brew install switchaudio-osx"
+  exit 1
+fi
+
+# Save original audio sources before changing anything
+save_original_audio_sources
+
+# Check If Audio Device Exists
+if ! check_audio_device; then
+  echo "ERROR: Audio device '$DEVICE_NAME' not found."
+  echo "Available audio devices: "
+  SwitchAudioSource -a
+  exit 1
+fi
+
+# Set Teensy as the audio input device
+echo "Setting $DEVICE_NAME as audio input device"
+SwitchAudioSource -t "input" -s "$DEVICE_NAME"
+
+echo "Setting $DEVICE_NAME as audio output device..."
+SwitchAudioSource -t "output" -s "$DEVICE_NAME"
+
+# Verify that the settings were applied
+echo "Current audio input device: $(SwitchAudioSource -c -t input)"
+echo "Current audio output device: $(SwitchAudioSource -c -t output)"
+echo "Teensy audio configuration complete!"
+
+
+############################################
+#                                          #
+#       Evaluation Business                #
+#                                          #
+############################################
+
+setup_working_directory
+process_all_speakers_audio
 
 echo "Running analysis scripts..."
 if [ $EARLY_TERMINATION -eq 0 ]; then
@@ -364,6 +374,7 @@ if [ $EARLY_TERMINATION -eq 1 ]; then
   echo "⚠️ PROCESS WAS TERMINATED EARLY"
 fi
 echo "Total files processed: $total_processed"
+
 for speaker in "${speakers[@]}"; do
   # Calculate expected number of files (source files × number of modes)
   source_count=$(find $FILES_DIR/$speaker -name "*.wav" | wc -l | tr -d ' ')

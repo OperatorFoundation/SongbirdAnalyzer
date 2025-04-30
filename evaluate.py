@@ -1,5 +1,4 @@
 import sys
-import os
 import pandas as pd
 
 def main():
@@ -9,7 +8,7 @@ def main():
 
     # Parse arguments
     results_file = sys.argv[1]
-    output_prefix = sys.argv[1] if len(sys.argv) < 3 else sys.argv[2]
+    output_prefix = results_file.replace('.csv', '') if len(sys.argv) < 3 else sys.argv[2].replace('.csv', '')
 
     print(f"Evaluating {results_file}")
 
@@ -31,8 +30,9 @@ def main():
     if "wav_file" in results_data.columns:
         exclude_columns.append("wav_file")
 
-    mfccs = results_data.drop(columns=exclude_columns)
     correct_answers = results_data["speaker"]
+    mfccs = results_data.drop(columns=exclude_columns)
+
 
     # Save the extracted data
     mfccs.to_csv(f"{output_prefix}_mfccs.csv", index=False)

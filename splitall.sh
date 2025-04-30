@@ -1,5 +1,5 @@
 # Maximum time in seconds for each audio segment
-MAX_TIME=15
+MAX_TIME=10
 SPEAKER_DIR="$1"
 WORKING_DIR="$2"
 
