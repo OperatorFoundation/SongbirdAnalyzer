@@ -29,8 +29,8 @@ wget -nc https://www.archive.org/download/emma_solo_librivox/emma_solo_librivox_
 for zip in *.zip; do
   unzip -u "$zip"
 done
-rm emma_01_04_austen_64kb.mp3 # guest reader
-rm emma_02_11_austen_64kb.mp3 # guest reader
+rm -f emma_01_04_austen_64kb.mp3 # guest reader
+rm -f emma_02_11_austen_64kb.mp3 # guest reader
 popd
 
 ./splitall.sh $USERS_DIR $WORKING_DIR
