@@ -1,7 +1,8 @@
 """
 Audio Feature Extraction Script
 
-This script processes WAV audio files organized in a directory structure of:
+This script processes WAV audio files organized in either:
+1. Mode-based structure (for evaluation):
     working_dir/
         mode1/
             speaker1/
@@ -10,6 +11,14 @@ This script processes WAV audio files organized in a directory structure of:
             speaker2/
                 ...
         mode2/
+            ...
+
+2. Simple structure (for training):
+    working_dir/
+        speaker1/
+            audio1.wav
+            audio2.wav
+        speaker2/
             ...
 
 It extracts MFCC features and saves both combined and mode-specific results.
@@ -97,9 +106,12 @@ def create_visualization(features, audio_file_path, sample_rate):
         output_path = os.path.join("images", f"{base_file_name}{suffix}.png")
         save_visualization(features[feature_name], output_path, sample_rate)
 
-def generate_csv_header(features):
+def generate_csv_header(features, include_mode=True):
     """Generate CSV header row based on feature dimensions."""
-    header = ["speaker", "wav_file", "mode"]
+    if include_mode:
+        header = ["speaker", "wav_file", "mode"]
+    else:
+        header = ["speaker", "wav_file"]
 
     # Add column names for each feature type
     for name, feature_list in [
@@ -111,7 +123,7 @@ def generate_csv_header(features):
 
     return header
 
-def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first_row_flag):
+def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first_row_flag, include_mode=True):
     """Process a single audio file and write features to CSV."""
     try:
         # Load the audio file
@@ -125,7 +137,7 @@ def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first
 
         # Write header row if this is the first file
         if first_row_flag:
-            header = generate_csv_header(features)
+            header = generate_csv_header(features, include_mode)
             csv_writer.writerow(header)
             first_row_flag = False
 
@@ -133,7 +145,11 @@ def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first
         wav_file_name = os.path.basename(audio_file_path)
 
         # Write feature values for this file
-        row_data = [speaker_id, wav_file_name, mode_name] + features[MFCCS] + features[DELTA_MFCCS] + features[DELTA2_MFCCS]
+        if include_mode:
+            row_data = [speaker_id, wav_file_name, mode_name] + features[MFCCS] + features[DELTA_MFCCS] + features[DELTA2_MFCCS]
+        else:
+            row_data = [speaker_id, wav_file_name] + features[MFCCS] + features[DELTA_MFCCS] + features[DELTA2_MFCCS]
+
         csv_writer.writerow(row_data)
         return first_row_flag
 
@@ -162,85 +178,173 @@ def extract_speaker_labels(csv_file_path, output_path):
     except Exception as error:
         print(f"Error extracting speaker labels from {csv_file_path}: {error}")
 
+def detect_directory_structure(working_directory):
+    """
+   Detects whether the directory structure has modes or is a simple speaker-based structure.
+
+   Returns:
+       tuple: (has_modes, first_level_dirs)
+           - has_modes: True if the structure includes mode directories, False otherwise
+           - first_level_dirs: List of directories at the first level (either modes or speakers)
+   """
+    first_level_dirs = [directory for directory in os.listdir(working_directory)
+                        if os.path.isdir(os.path.join(working_directory, directory))]
+    if not first_level_dirs:
+        print(f"No subdirectories found in {working_directory}.")
+        sys.exit(1)
+
+    # Check the first directory to see if it contains speaker directories
+    first_dir_path = os.path.join(working_directory, first_level_dirs[0])
+    subdir_contents = os.listdir(first_dir_path)
+
+    # Check if there are subdirectories (likely speaker directories)
+    has_subdirs = any(os.path.isdir(os.path.join(first_dir_path, item)) for item in subdir_contents)
+
+    # Check if there are wav files in the first subdirectory
+    has_wav_files = any(item.lower().endswith('.wav') for item in subdir_contents)
+
+    # If there are subdirectories and no WAV files, it's likely a mode-based structure
+    has_modes = has_subdirs and not has_wav_files
+
+    return has_modes, first_level_dirs
+
+def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_row_flags, include_mode=True):
+    """
+    Process all WAV files for a speaker and add them to the provided CSV writers.
+
+    Args:
+        speaker_path: Path to the speaker directory
+        speaker_id: ID of the speaker
+        mode_name: Name of the mode (or None if no modes)
+        csv_writers: Dictionary of CSV writers to write to
+        first_row_flags: Dictionary of flags indicating if this is the first row for each writer
+        include_mode: Whether to include the mode column
+
+    Returns:
+        Dictionary of updated first_row_flags
+    """
+
+    # Get all the wav files for this speaker
+    wav_files = glob.glob(os.path.join(speaker_path, "*.wav"))
+
+    # Process each wav file
+    for wav_file in wav_files:
+        wav_name = os.path.basename(wav_file)
+        print(f"{'  ' if mode_name else ''}Processing file {wav_name}...")
+
+        # Process file and add to each CSV writer
+        for writer_name, writer in csv_writers.items():
+            first_row_flags[writer_name] = process_audio_file(wav_file,
+                                                              speaker_id,
+                                                              mode_name,
+                                                              writer,
+                                                              first_row_flags[writer_name],
+                                                              include_mode)
+    return first_row_flags
+
+
 def main():
     # Validate command line arguments
     if len(sys.argv) < 3:
-        print("Usage: python automfcc.py <input_directory> <output_csv_file>")
+        print("Usage: python automfcc.py <working_directory> <output_csv_file>")
         sys.exit(1)
 
-    input_directory = sys.argv[1]
-    output_csv = sys.argv[2]
-    output_base = output_csv.replace('.csv', '')
+    working_directory = sys.argv[1]
+    input_csv = sys.argv[2]
+    input_base = input_csv.replace('.csv', '')
 
     # Check if input directory exists
-    if not os.path.isdir(input_directory):
-        print(f"Input directory '{input_directory}' not found.")
+    if not os.path.isdir(working_directory):
+        print(f"Input directory '{working_directory}' not found.")
         sys.exit(1)
 
-    # Get list of mode directories
+    # Detect directory structure
     try:
-        mode_directories = [directory_name  for directory_name  in os.listdir(input_directory)
-                            if os.path.isdir(os.path.join(input_directory, directory_name))]
+        has_modes, first_level_dirs = detect_directory_structure(working_directory)
 
-        if not mode_directories:
-            print(f"No mode directories found in {input_directory}.")
-            sys.exit(1)
-    except Exception as error:
-        print(f"Error accessing input directory '{input_directory}': {error}")
-        sys.exit(1)
+        if has_modes:
+            print(f"Detected mode-based directory structure with modes: {first_level_dirs}")
 
-    # Open the combined CSV file for all modes
-    combined_csv_path = f"{output_base}_mfccs.csv"
-    with open(combined_csv_path, 'w', newline='') as combined_csv_file:
-        combined_csv_writer = csv.writer(combined_csv_file, delimiter=',')
-        combined_first_row = True
+            # Create the combined CSV writer
+            combined_csv_path = f"{input_base}_combined_{MFCCS}.csv"
+            combined_csv_file = open(combined_csv_path, 'w', newline='')
+            combined_csv_writer = csv.writer(combined_csv_file, delimiter=',')
 
-        # Process each mode directory
-        for mode in mode_directories:
-            mode_path = os.path.join(input_directory, mode)
-            print(f"\nProcessing mode directory: {mode}")
+            # Process each mode
+            for mode_name in first_level_dirs:
+                mode_path = os.path.join(working_directory, mode_name)
+                print(f"\nProcessing mode: {mode_name}...")
 
-            # Create mode-specific output file
-            mode_csv_path = f"{output_base}_{mode}_mfccs.csv"
-            with open(mode_csv_path, 'w', newline='') as mode_csv_file:
+                # Create mode specific CSV writer
+                mode_csv_path = f"{input_base}_{mode_name}_{MFCCS}.csv"
+                mode_csv_file = open(mode_csv_path, 'w', newline='')
                 mode_csv_writer = csv.writer(mode_csv_file, delimiter=',')
-                mode_first_row = True
 
-                # Get all speakers within this mode
+                # Initialize CSV writers and first row flags
+                csv_writers = {"combined": combined_csv_writer, "mode": mode_csv_writer}
+                first_row_flags = {"combined": True, "mode": True}
+
                 try:
+                    # Get all speakers for this mode
                     speakers = [speaker for speaker in os.listdir(mode_path)
                                 if os.path.isdir(os.path.join(mode_path, speaker))]
+
+                    # Process each speaker
+                    for speaker in speakers:
+                        speaker_path = os.path.join(mode_path, speaker)
+                        print(f"    Processing speaker {speaker} in {mode} mode...")
+
+                        # Process all WAV files for this speaker
+                        first_row_flags = process_wav_files(speaker_path, speaker, mode_name, csv_writers, first_row_flags, include_mode=True)
                 except Exception as error:
-                    print(f"Error accessing mode directory '{mode_path}': {error}")
-                    continue
+                    print(f"Error processing mode {mode_name}: {error}")
 
-                # Process each speaker within this mode
-                for speaker in speakers:
-                    speaker_path = os.path.join(mode_path, speaker)
-                    print(f"    Processing speaker {speaker} in {mode} mode...")
+                # Close mode specific file and extract speaker labels
+                mode_csv_file.close()
+                if os.path.exists(mode_csv_path):
+                    mode_speaker_csv = f"{input_base}_{mode_name}_speakers.csv"
+                    extract_speaker_labels(mode_csv_path, mode_speaker_csv)
 
-                    # Get all the WAV files for this speaker in this mode
-                    wav_files = glob.glob(os.path.join(speaker_path, "*.wav"))
+                # Close combined file and extract speaker labels
+                combined_csv_file.close()
+                if os.path.exists(combined_csv_path):
+                    combined_speaker_csv = f"{input_base}_combined_speakers.csv"
+                    extract_speaker_labels(combined_csv_path, combined_speaker_csv)
 
-                    # Process each WAV file
-                    for wav_file in wav_files:
-                        print(f"        Processing file {os.path.basename(wav_file)}...")
+            else:
+                print(f"Detected simple speaker-based directory structure with speakers: {first_level_dirs}")
 
-                        # Add to combined CSV
-                        combined_first_row = process_audio_file(wav_file, speaker, mode, combined_csv_writer, combined_first_row)
+                # Create the output CSV writer
+                output_csv_path = f"{input_base}_{MFCCS}.csv"
+                output_csv_file = open(output_csv_path, 'w', newline='')
+                output_csv_writer = csv.writer(output_csv_file, delimiter=',')
 
-                        # Add to mode specific CSV
-                        mode_first_row = process_audio_file(wav_file, speaker, mode, mode_csv_writer, mode_first_row)
+                # Initialize the CSV writer and first row flag
+                csv_writers = {"output": output_csv_writer}
+                first_row_flags = {"output": True}
 
-            # Extract speaker labels for this mode
-            if os.path.exists(mode_csv_path):
-                mode_speaker_csv = f"{output_base}_{mode}_speakers.csv"
-                extract_speaker_labels(mode_csv_path, mode_speaker_csv)
+                # Process each speaker
+                for speaker in first_level_dirs:
+                    speaker_path = os.path.join(working_directory, speaker)
+                    print(f"\nProcessing speaker directory: {speaker}")
 
-    # Extract speaker labels for combined data
-    if os.path.exists(combined_csv_path):
-        combined_speaker_csv = f"{output_base}_speakers.csv"
-        extract_speaker_labels(combined_csv_path, combined_speaker_csv)
+                    # Process all WAV files for this speaker
+                    first_row_flags = process_wav_files(
+                        speaker_path, speaker, None, csv_writers,
+                        first_row_flags, include_mode=False
+                    )
+
+                # Close output file and extract speaker labels
+                output_csv_file.close()
+                if os.path.exists(output_csv_path):
+                    speaker_csv = f"{input_base}_speakers.csv"
+                    extract_speaker_labels(output_csv_path, speaker_csv)
+
+    except Exception as error:
+        print(f"Error processing directory structure: {error}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
     print("\nFeature extraction complete!")
 
