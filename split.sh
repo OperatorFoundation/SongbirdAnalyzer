@@ -12,4 +12,3 @@ BASE_NAME=$(basename "${INPUT_FILE%.*}")
 # - Create sequentially numbered output files
 # - Each file is trimmed to MAX_TIME length
 sox "${INPUT_FILE}" -V1 -c 1 "${OUTPUT_DIR}/${BASE_NAME}_%03n.wav" trim 0 ${MAX_TIME} : newfile : restart
-

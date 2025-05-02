@@ -342,7 +342,7 @@ SwitchAudioSource -t "output" -s "$DEVICE_NAME"
 # Verify that the settings were applied
 echo "Current audio input device: $(SwitchAudioSource -c -t input)"
 echo "Current audio output device: $(SwitchAudioSource -c -t output)"
-echo "Teensy audio configuration complete!"
+echo "Teensy audio configuration complete!\n"
 
 
 ############################################
@@ -354,7 +354,7 @@ echo "Teensy audio configuration complete!"
 setup_working_directory
 process_all_speakers_audio
 
-echo "Running analysis scripts..."
+echo "\nRunning analysis scripts..."
 if [ $EARLY_TERMINATION -eq 0 ]; then
   python3 automfcc.py $WORKING_DIR $RESULTS_FILE
   python3 evaluate.py $RESULTS_FILE

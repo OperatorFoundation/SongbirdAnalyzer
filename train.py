@@ -8,6 +8,7 @@ import joblib
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from spinner import Spinner
 
 def split_data(data_frame, first_column='speaker'):
     """
@@ -33,46 +34,45 @@ def split_data(data_frame, first_column='speaker'):
     return features_data_frame, target_data_frame
 
 def train_with_progress(features_data_frame, target_data_frame, n_estimators=100):
+    """
+    Train a Random Forest Classifier model with a spinner animation to show progress.
+
+    This function creates and trains a RandomForestClassifier model while displaying
+    a spinner animation to provide visual feedback during the training process.
+
+    Args:
+        features_data_frame: DataFrame containing the feature data for training.
+        target_data_frame: DataFrame containing the target values for training.
+        n_estimators (int): Number of trees in the random forest (default: 100).
+
+    Returns:
+        RandomForestClassifier: The trained model.
+    """
+
     print(f"Training RandomForestClassifier with {n_estimators} trees...")
 
     # Create the model
     model = RandomForestClassifier(n_estimators=n_estimators, verbose=0)
 
-    # Get start time
+    # Record the start time for calculating training duration
     start_time = time.time()
 
-    # Simple spinner animation
-    spinner = ['-', '\\', '|', '/']
-    i = 0
+    # Create a spinner with a custom message and start it
+    spinner = Spinner(message="Training model...")
+    spinner.start()
 
-    # Start a thread to update the spinner
-    import threading
-
-    stop_spinner = False
-
-    def spin():
-        i = 0
-        while not stop_spinner:
-            sys.stdout.write('\r' + f"Training model... {spinner[i % len(spinner)]}")
-            sys.stdout.flush()
-            i += 1
-            time.sleep(0.2)
-    # Start the spinner in a seperate thread
-    spinner_thread = threading.Thread(target=spin)
-    spinner_thread.deamon = True
-    spinner_thread.start()
 
     try:
         # Train the model
         model.fit(features_data_frame, target_data_frame)
-    finally:
-        # Stop the spinner
-        stop_spinner = True
-        spinner_thread.join(timeout=1)
+    finally: # No matter what, stop the spinner
+        # Calculate the total training time
         training_time = time.time() - start_time
-        sys.stdout.write('\r' + f"Model training completed in {training_time:.2f} seconds!      \n")
-        sys.stdout.flush()
 
+        completion_message = f"Model training completed in {training_time:.2f} seconds!      \n"
+        spinner.stop(completion_message)
+
+    # Return the trained model
     return model
 
 

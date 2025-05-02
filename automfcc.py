@@ -292,7 +292,7 @@ def main():
                     # Process each speaker
                     for speaker in speakers:
                         speaker_path = os.path.join(mode_path, speaker)
-                        print(f"    Processing speaker {speaker} in {mode} mode...")
+                        print(f"    Processing speaker {speaker} in {mode_name} mode...")
 
                         # Process all WAV files for this speaker
                         first_row_flags = process_wav_files(speaker_path, speaker, mode_name, csv_writers, first_row_flags, include_mode=True)
