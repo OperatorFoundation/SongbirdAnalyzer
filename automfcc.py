@@ -36,7 +36,7 @@ import librosa.display
 import matplotlib.pyplot as plt
 
 # Import the Spinner class from spinner.py
-from utils.spinner import Spinner
+from spinner import Spinner
 
 # Define constants for feature names and messages
 MFCC = "mfcc"

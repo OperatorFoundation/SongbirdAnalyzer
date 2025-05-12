@@ -30,13 +30,13 @@ def process_data(data_prefix, model_file, mode=None):
 
     # Determine file paths based on mode
     if mode:
-        mfccs_file = f"{data_prefix}_{mode}_mfccs.csv"
+        mfccs_file = f"{data_prefix}_{mode}_mfccs_trimmed.csv"
         speakers_file = f"{data_prefix}_{mode}_speakers.csv"
         output_prefix = f"{data_prefix}_{mode}"
         print(f"\n\n{'='*50}")
         print(f"PROCESSING MODE: {mode}")
     else:
-        mfccs_file = f"{data_prefix}_mfccs.csv"
+        mfccs_file = f"{data_prefix}_mfccs_trimmed.csv"
         speakers_file = f"{data_prefix}_speakers.csv"
         output_prefix = data_prefix
         print(f"\n\n{'='*50}")
@@ -176,7 +176,7 @@ def main():
     mode_results = []
     for mode in mode_names:
         # Check if mode-specific files exist
-        mfcc_file = f"{data_prefix}_{mode}_mfccs.csv"
+        mfcc_file = f"{data_prefix}_{mode}_mfccs_trimmed.csv"
         if os.path.exists(mfcc_file):
             result = process_data(data_prefix, model_file, mode)
             if result:
