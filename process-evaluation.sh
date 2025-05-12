@@ -275,7 +275,6 @@ done
 
   echo "" >> $TRACKING_FILE
   echo "Tracking report saved to: $TRACKING_FILE"
-
 }
 
 setup_working_directory()

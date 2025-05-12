@@ -36,7 +36,7 @@ import librosa.display
 import matplotlib.pyplot as plt
 
 # Import the Spinner class from spinner.py
-from spinner import Spinner
+from utils.spinner import Spinner
 
 # Define constants for feature names and messages
 MFCC = "mfcc"
@@ -157,7 +157,7 @@ def generate_csv_header(features, include_mode=True):
 
     return header
 
-def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first_row_flag, include_mode=True, spinner=None):
+def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first_row_flag, include_mode=True):
     """
     Process a single audio file and write features to CSV.
 
@@ -176,9 +176,6 @@ def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first
     try:
         # Update spinner with current file if provided
         file_name = os.path.basename(audio_file_path)
-        if spinner:
-            spinner.stop(MSG_PROCESSING_FILE.format(file_name))
-            spinner.start()
 
         # Load the audio file
         signal, sample_rate = librosa.load(audio_file_path)
@@ -206,11 +203,7 @@ def process_audio_file(audio_file_path, speaker_id, mode_name, csv_writer, first
         return first_row_flag
 
     except Exception as error:
-        # Update spinner with error if provided
-        if spinner:
-            spinner.stop(f'Error processing {audio_file_path}: {error}')
-        else:
-            print(f'Error processing {audio_file_path}: {error}')
+        print(f'Error processing {audio_file_path}: {error}')
         return first_row_flag
 
 def extract_speaker_labels(csv_file_path, output_path):
@@ -264,7 +257,7 @@ def detect_directory_structure(working_directory):
 
     return has_modes, first_level_dirs
 
-def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_row_flags, include_mode=True, spinner=None):
+def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_row_flags, include_mode=True):
     """
     Process all WAV files for a speaker and add them to the provided CSV writers.
 
@@ -283,20 +276,8 @@ def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_ro
     # Get all the wav files for this speaker
     wav_files = glob.glob(os.path.join(speaker_path, f"*{WAV_EXTENSION}"))
 
-    # Update spinner with file count if provided
-    if spinner:
-        spinner.stop(MSG_PROCESSING_FILES.format(len(wav_files), speaker_id))
-        spinner.start()
-
     # Process each wav file
     for i, wav_file in enumerate(wav_files):
-        # Update spinner with progress if provided
-        if spinner:
-            progress = f"[{i+1}/{len(wav_files)}]"
-            wav_name = os.path.basename(wav_file)
-            spinner.stop(f"{progress} {MSG_PROCESSING_FILE.format(wav_name)}")
-            spinner.start()
-
         # Process file and add to each CSV writer
         for writer_name, writer in csv_writers.items():
             first_row_flags[writer_name] = process_audio_file(
@@ -305,8 +286,7 @@ def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_ro
                 mode_name,
                 writer,
                 first_row_flags[writer_name],
-                include_mode,
-                spinner
+                include_mode
             )
 
     return first_row_flags
@@ -404,8 +384,7 @@ def main():
                     None,
                     csv_writers,
                     first_row_flags,
-                    include_mode=False,
-                    spinner=spinner
+                    include_mode=False
                 )
 
         # Calculate total processing time

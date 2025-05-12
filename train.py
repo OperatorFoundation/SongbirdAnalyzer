@@ -8,7 +8,7 @@ import joblib
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from spinner import Spinner
+from utils.spinner import Spinner
 
 def split_data(data_frame, first_column='speaker'):
     """
