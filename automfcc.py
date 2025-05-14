@@ -366,7 +366,6 @@ def main():
                         csv_writers,
                         first_row_flags,
                         include_mode=True,
-                        spinner=spinner
                     )
         else:
             # Process speakers separately
