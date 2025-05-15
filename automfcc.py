@@ -91,6 +91,7 @@ MSG_ERROR = "Error: {}"
 MSG_SAVED_LABELS = "Saved {} speaker labels to {}"
 MSG_ERROR_LABELS = "Error extracting speaker labels from {}: {}"
 MSG_NO_SUBDIRS = "No subdirectories found in {}."
+MSG_COMBINING_FILES = "Combining mode files into main CSV file..."
 
 def extract_features(signal, sample_rate):
     """Extracts MFCC features and their deltas from a WAV audio signal."""
@@ -291,6 +292,63 @@ def process_wav_files(speaker_path, speaker_id, mode_name, csv_writers, first_ro
 
     return first_row_flags
 
+def combine_mode_files(output_csv_path, input_base, first_level_dirs, spinner=None):
+    """
+    Combines multiple mode-specific CSV files into a single main CSV file.
+    
+    Args:
+        output_csv_path: Path to the output combined CSV file
+        input_base: Base path for input files
+        first_level_dirs: List of mode directories to combine
+        spinner: Optional spinner to update during processing
+    """
+    if spinner:
+        spinner.stop(MSG_COMBINING_FILES)
+        spinner.start()
+    else:
+        print(MSG_COMBINING_FILES)
+    
+    # Initialize counters to report stats
+    total_rows = 0
+    speakers_found = set()
+    
+    # Now combine all mode files into the main CSV
+    with open(output_csv_path, 'w', newline='') as main_file:
+        main_writer = csv.writer(main_file, delimiter=',')
+        header_written = False
+        
+        # Process each mode file
+        for mode_name in first_level_dirs:
+            mode_path = f"{input_base}_{mode_name}_{MFCCS}{CSV_EXTENSION}"
+            
+            if not os.path.exists(mode_path):
+                print(f"Warning: Mode file {mode_path} not found, skipping")
+                continue
+                
+            with open(mode_path, 'r', newline='') as mode_file:
+                reader = csv.reader(mode_file)
+                header = next(reader)  # Get header
+                
+                # Write header only once
+                if not header_written:
+                    main_writer.writerow(header)
+                    header_written = True
+                
+                # Copy all data rows from this mode
+                for row in reader:
+                    main_writer.writerow(row)
+                    total_rows += 1
+                    
+                    # Track unique speakers
+                    if row and len(row) > 0:
+                        speakers_found.add(row[0])
+    
+    # Report stats
+    print(f"Combined {total_rows} rows from {len(first_level_dirs)} modes")
+    print(f"Found {len(speakers_found)} unique speakers: {', '.join(speakers_found)}")
+    
+    return total_rows, len(speakers_found)
+
 
 def main():
     # Validate command line arguments
@@ -321,13 +379,6 @@ def main():
         entity_type = MSG_MODES if has_modes else MSG_SPEAKERS
         spinner.stop(MSG_STRUCTURE_DETECTED.format(structure_type, len(first_level_dirs), entity_type))
 
-        # Create main output CSV file
-        main_file_key = "main"
-        output_csv_path = f"{input_base}_{MFCCS}{CSV_EXTENSION}"
-        csv_files = {main_file_key: open(output_csv_path, 'w', newline='')}
-        csv_writers = {main_file_key: csv.writer(csv_files[main_file_key], delimiter=',')}
-        first_row_flags = {main_file_key: True}
-
         # Record start time for overall processing
         start_time = time.time()
         spinner.start()
@@ -342,72 +393,86 @@ def main():
 
                 mode_path = os.path.join(working_directory, mode_name)
                 mode_csv_path = f"{input_base}_{mode_name}_{MFCCS}{CSV_EXTENSION}"
+                
+                # Create CSV writer for this mode
+                with open(mode_csv_path, 'w', newline='') as mode_file:
+                    mode_writer = csv.writer(mode_file, delimiter=',')
+                    first_row_flag = True
 
-                csv_files[mode_name] = open(mode_csv_path, 'w', newline='')
-                csv_writers[mode_name] = csv.writer(csv_files[mode_name], delimiter=',')
-                first_row_flags[mode_name] = True
+                    # Get speakers in this mode
+                    speakers = [s for s in os.listdir(mode_path) if os.path.isdir(os.path.join(mode_path, s))]
 
-                # Get speakers in this mode
-                speakers = [s for s in os.listdir(mode_path) if os.path.isdir(os.path.join(mode_path, s))]
+                    # Process speakers within this mode
+                    for speaker_index, speaker in enumerate(speakers):
+                        speaker_progress = f"{mode_progress} [{speaker_index+1}/{len(speakers)}]"
+                        spinner.stop(f"{speaker_progress} {MSG_PROCESSING_SPEAKER.format(speaker)}")
+                        spinner.start()
 
-                # Process speakers within this mode
-                for speaker_index, speaker in enumerate(speakers):
-                    speaker_progress = f"{mode_progress} [{speaker_index+1}/{len(speakers)}]"
+                        speaker_path = os.path.join(mode_path, speaker)
+
+                        # Process all WAV files for this speaker
+                        wav_files = glob.glob(os.path.join(speaker_path, f"*{WAV_EXTENSION}"))
+                        for wav_file in wav_files:
+                            first_row_flag = process_audio_file(
+                                wav_file,
+                                speaker,
+                                mode_name,
+                                mode_writer,
+                                first_row_flag,
+                                include_mode=True
+                            )
+
+            # Calculate total processing time
+            total_time = time.time() - start_time
+            spinner.stop(MSG_PROCESSED_FILES.format(total_time))
+            
+            # After all modes are processed, combine them into the main file
+            total_rows, unique_speakers = combine_mode_files(input_csv, input_base, first_level_dirs, spinner)
+            
+            # Create the combined speaker labels file
+            spinner.stop(MSG_CREATING_LABELS)
+            spinner.start()
+            
+            speaker_csv = f"{input_base}_speakers{CSV_EXTENSION}"
+            extract_speaker_labels(input_csv, speaker_csv)
+            
+        else:
+            # Simple speaker-based structure (for training data)
+            # Create main output CSV file
+            with open(input_csv, 'w', newline='') as output_file:
+                writer = csv.writer(output_file, delimiter=',')
+                first_row_flag = True
+
+                # Process speakers separately
+                for speaker_index, speaker in enumerate(first_level_dirs):
+                    speaker_progress = f"[{speaker_index+1}/{len(first_level_dirs)}]"
                     spinner.stop(f"{speaker_progress} {MSG_PROCESSING_SPEAKER.format(speaker)}")
                     spinner.start()
 
-                    speaker_path = os.path.join(mode_path, speaker)
+                    speaker_path = os.path.join(working_directory, speaker)
 
                     # Process all WAV files for this speaker
-                    first_row_flags = process_wav_files(
-                        speaker_path,
-                        speaker,
-                        mode_name,
-                        csv_writers,
-                        first_row_flags,
-                        include_mode=True,
-                    )
-        else:
-            # Process speakers separately
-            for speaker_index, speaker in enumerate(first_level_dirs):
-                speaker_progress = f"[{speaker_index+1}/{len(first_level_dirs)}]"
-                spinner.stop(f"{speaker_progress} {MSG_PROCESSING_SPEAKER.format(speaker)}")
-                spinner.start()
+                    wav_files = glob.glob(os.path.join(speaker_path, f"*{WAV_EXTENSION}"))
+                    for wav_file in wav_files:
+                        first_row_flag = process_audio_file(
+                            wav_file, 
+                            speaker, 
+                            None, 
+                            writer, 
+                            first_row_flag, 
+                            include_mode=False
+                        )
 
-                speaker_path = os.path.join(working_directory, speaker)
+            # Calculate total processing time
+            total_time = time.time() - start_time
+            spinner.stop(MSG_PROCESSED_FILES.format(total_time))
 
-                # Process all WAV files for this speaker
-                first_row_flags = process_wav_files(
-                    speaker_path,
-                    speaker,
-                    None,
-                    csv_writers,
-                    first_row_flags,
-                    include_mode=False
-                )
-
-        # Calculate total processing time
-        total_time = time.time() - start_time
-        spinner.stop(MSG_PROCESSED_FILES.format(total_time))
-
-        # Finalize results and create speaker label files
-        spinner.stop(MSG_CREATING_LABELS)
-        spinner.start()
-
-        # Close all csv files and create speaker label files
-        for name, file_handle in csv_files.items():
-            file_handle.close()
-
-            # Create corresponding speaker label file
-            if name == main_file_key:
-                speaker_csv = f"{input_base}_speakers{CSV_EXTENSION}"
-                csv_path = output_csv_path
-            else:
-                speaker_csv = f"{input_base}_{name}_speakers{CSV_EXTENSION}"
-                csv_path = f"{input_base}_{name}_{MFCCS}{CSV_EXTENSION}"
-
-            if os.path.exists(csv_path):
-                extract_speaker_labels(csv_path, speaker_csv)
+            # Create speaker label files
+            spinner.stop(MSG_CREATING_LABELS)
+            spinner.start()
+            
+            speaker_csv = f"{input_base}_speakers{CSV_EXTENSION}"
+            extract_speaker_labels(input_csv, speaker_csv)
 
         spinner.stop(MSG_COMPLETE)
 
