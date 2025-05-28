@@ -15,3 +15,4 @@ results/*
 /working-evaluation/*
 modified_audio_tracking_report.txt
 __pycache__/train.cpython-39.pyc
+/__pycache__
