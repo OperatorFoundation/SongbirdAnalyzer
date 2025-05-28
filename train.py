@@ -90,6 +90,11 @@ if __name__ == "__main__":
 
     # Create a directory for test WAV files
     test_wav_dir = output_prefix + "_wav"
+
+    if os.path.exists(test_wav_dir):
+        shutil.rmtree(test_wav_dir)
+        print(f"Deleted existing directory for test WAV files: {test_wav_dir}")
+
     os.makedirs(test_wav_dir, exist_ok=True)
     print(f"Created directory for test WAV files: {test_wav_dir}")
 
@@ -128,7 +133,6 @@ if __name__ == "__main__":
         print("Consider encoding these columns before training")
 
     # Split the data for training and testing, tracking WAV files
-    # Split the data for training and testing
     if wav_files is not None:
         # If we have wav_files, include them in the split
         features_train, features_test, target_train, target_test, wav_files_train, wav_files_test = train_test_split(
@@ -171,7 +175,7 @@ if __name__ == "__main__":
 
         # If the source doesn't exist, try adding .wav extension
         if not os.path.exists(source_path) and not wav_filename.endswith('.wav'):
-            source_path = os.path.join(wav_dir, str(speaker_id), wav_filename)
+            source_path = os.path.join(wav_dir, str(speaker_id), wav_filename + '.wav')
 
         # Copy the file if it exists
         if os.path.exists(source_path):

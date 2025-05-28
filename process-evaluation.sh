@@ -292,7 +292,7 @@ setup_working_directory()
 
     for speaker in "${speakers[@]}"; do
       mkdir -p "$WORKING_DIR/$mode_name/$speaker"
-      echo "Created directory: $WORKING_DIR/$mode_name/$user"
+      echo "Created directory: $WORKING_DIR/$mode_name/$speaker"
     done
   done
 }

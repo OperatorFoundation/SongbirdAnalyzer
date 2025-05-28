@@ -4,6 +4,13 @@ SPEAKER_DIR="$1"
 WORKING_DIR="$2"
 
 for SPEAKER_ID in 21525 23723 19839; do
+  # Clean the working directories if they already exist
+  if [ -d "${WORKING_DIR}/$SPEAKER_ID" ]; then
+    rm -f "${WORKING_DIR}/$SPEAKER_ID"/*.wav
+    echo "Cleaned WAV files for speaker $SPEAKER_ID"
+  fi
+
+
   # Create an output directory for each SPEAKER_ID
   mkdir -p "${WORKING_DIR}/$SPEAKER_ID"
 
