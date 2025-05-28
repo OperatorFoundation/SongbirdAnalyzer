@@ -32,11 +32,57 @@ cleanup() {
   exit 1
 }
 
+# Functions to simulate associative arrays
+set_total_files_created() {
+  local speaker="$1"
+  local value="$2"
+  # Clean speaker name for variable name (replace hyphens and other chars with underscores)
+  local clean_speaker=$(echo "$speaker" | sed 's/[^a-zA-Z0-9]/_/g')
+  eval "total_files_created_${clean_speaker}=${value}"
+}
+
+get_total_files_created() {
+  local speaker="$1"
+  local clean_speaker=$(echo "$speaker" | sed 's/[^a-zA-Z0-9]/_/g')
+  local value
+  eval "value=\$total_files_created_${clean_speaker}"
+  echo "${value:-0}"
+}
+
+increment_total_files_created() {
+  local speaker="$1"
+  local current=$(get_total_files_created "$speaker")
+  set_total_files_created "$speaker" $((current + 1))
+}
+
+set_files_modified() {
+  local speaker="$1"
+  local mode="$2"
+  local value="$3"
+  # Clean the key for variable name
+  local clean_key=$(echo "${speaker}-${mode}" | sed 's/[^a-zA-Z0-9]/_/g')
+  eval "files_modified_${clean_key}=${value}"
+}
+
+get_files_modified() {
+  local speaker="$1"
+  local mode="$2"
+  local clean_key=$(echo "${speaker}-${mode}" | sed 's/[^a-zA-Z0-9]/_/g')
+  local value
+  eval "value=\$files_modified_${clean_key}"
+  echo "${value:-0}"
+}
+
+increment_files_modified() {
+  local speaker="$1"
+  local mode="$2"
+  local current=$(get_files_modified "$speaker" "$mode")
+  set_files_modified "$speaker" "$mode" $((current + 1))
+}
+
 print_header "Audio Recording"
 
 # Initialize Counters
-declare -A total_files_created
-declare -A files_modified
 total_processed=0
 EARLY_TERMINATION=0
 
@@ -85,11 +131,11 @@ echo "----------------------------------------" >> $TRACKING_FILE
 # Process each speaker in the array
 for speaker in ${speakers[@]}; do
   # Initialize counters for this speaker
-  total_files_created[$speaker]=0
+  set_total_files_created "$speaker" 0
 
   # Initialize mode-specific counters for this speaker
   for mode in "${modes[@]}"; do
-    files_modified["$speaker-$mode"]=0
+    set_files_modified "$speaker" "$mode" 0
   done
 
   # Count number of source files for this speaker
@@ -177,8 +223,8 @@ for speaker in ${speakers[@]}; do
 
         if [ $filesize -gt 1024 ]; then
           echo "Recording complete and verified: $output_path ($filesize bytes)"
-          ((files_modified["$speaker-$mode"]++))
-          ((total_files_created[$speaker]++))
+          increment_files_modified "$speaker" "$mode"
+          increment_total_files_created "$speaker"
           ((total_processed++))
         else
           echo "⚠️ WARNING: Recording may be corrupt or empty: $output_path ($filesize bytes)"
@@ -199,12 +245,12 @@ for speaker in ${speakers[@]}; do
   # Log speaker summary to tracking file
   echo "" >> $TRACKING_FILE
   echo "SPEAKER $speaker SUMMARY:" >> $TRACKING_FILE
-  echo "Total files created: ${total_files_created[$speaker]}" >> $TRACKING_FILE
+  echo "Total files created: $(get_total_files_created "$speaker")" >> $TRACKING_FILE
 
   for mode_index in "${!modes[@]}"; do
     mode="${modes[$mode_index]}"
     mode_name="${mode_names[$mode_index]}"
-    echo "  - $mode_name mode: ${files_modified["$speaker-$mode"]}" >> $TRACKING_FILE
+    echo "  - $mode_name mode: $(get_files_modified "$speaker" "$mode")" >> $TRACKING_FILE
   done
   echo "----------------------------------------" >> $TRACKING_FILE
 done
@@ -221,7 +267,7 @@ for mode_index in "${!modes[@]}"; do
   mode_total=0
 
   for speaker in ${speakers[@]}; do
-    mode_total=$((mode_total + files_modified["$speaker-$mode"]))
+    mode_total=$((mode_total + $(get_files_modified "$speaker" "$mode")))
   done
 
   echo "Total files in $mode_name mode: $mode_total" >> $TRACKING_FILE
@@ -244,7 +290,7 @@ for speaker in "${speakers[@]}"; do
   expected=$((source_count * ${#modes[@]}))
 
   # Get actual count
-  actual=${total_files_created[$speaker]}
+  actual=$(get_total_files_created "$speaker")
 
   # Calculate completion percentage
   if [ $expected -eq 0 ]; then
@@ -253,11 +299,11 @@ for speaker in "${speakers[@]}"; do
     percentage=$((actual * 100 / expected))
   fi
 
-  echo "User $speaker: ${total_files_created[$speaker]} files created ($percentage% of expected $expected files)"
+  echo "User $speaker: $(get_total_files_created "$speaker") files created ($percentage% of expected $expected files)"
   for mode_index in "${!modes[@]}"; do
     mode="${modes[$mode_index]}"
     mode_name="${mode_names[$mode_index]}"
-    echo "  - $mode_name mode: ${files_modified["$speaker-$mode"]}"
+    echo "  - $mode_name mode: $(get_files_modified "$speaker" "$mode")"
   done
 done
 echo ""
