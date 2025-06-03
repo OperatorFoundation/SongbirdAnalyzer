@@ -75,6 +75,12 @@ MODEL_FILE="songbird.pkl"
 DEVICE_NAME="Teensy MIDI_Audio" # The device name as it appears on macOS
 TRACKING_FILE="modified_audio_tracking_report.txt"
 
+# CHECKPOINT AND RESUME CONFIGURATION
+# ===================================
+CHECKPOINT_FILE="$WORKING_DIR/.recording_progress.state"
+EXPECTED_AUDIO_DURATION_SECONDS=$MAX_TIME  # Expected duration for validation
+AUDIO_VALIDATION_TOLERANCE_SECONDS=2       # Allow ±2 seconds variance
+
 # BACKUP AND RECOVERY CONFIGURATION
 # ==================================
 BACKUP_ROOT_DIR="backups"
@@ -895,6 +901,311 @@ setup_training_working_directory()
     echo "✓ Training directory structure created successfully"
 }
 
+# CHECKPOINT AND RESUME SYSTEM FUNCTIONS
+# ======================================
+
+# Initialize or load checkpoint file
+initialize_checkpoint_system()
+{
+    local working_dir="$1"
+
+    # Ensure working directory exists
+    if [ ! -d "$working_dir" ]; then
+        echo "ERROR: Working directory $working_dir does not exist"
+        return 1
+    fi
+
+    # Set checkpoint file path
+    CHECKPOINT_FILE="$working_dir/.recording_progress.state"
+
+    # Create checkpoint file if it doesn't exist
+    if [ ! -f "$CHECKPOINT_FILE" ]; then
+        echo "# Recording Progress Checkpoint File" > "$CHECKPOINT_FILE"
+        echo "# Generated on $(date)" >> "$CHECKPOINT_FILE"
+        echo "# Format: speaker|mode_name|source_filename|output_path|status|timestamp" >> "$CHECKPOINT_FILE"
+        echo "Initialized new checkpoint file: $CHECKPOINT_FILE"
+    else
+        echo "Found existing checkpoint file: $CHECKPOINT_FILE"
+    fi
+
+    return 0
+}
+
+# Check if a specific recording task is already completed
+is_recording_completed()
+{
+    local speaker="$1"
+    local mode_name="$2"
+    local source_filename="$3"
+
+    if [ ! -f "$CHECKPOINT_FILE" ]; then
+        return 1  # Not completed (no checkpoint file)
+    fi
+
+    # Search for this specific recording in checkpoint file
+    # Format: speaker|mode_name|source_filename|output_path|status|timestamp
+    local search_pattern="${speaker}|${mode_name}|${source_filename}|"
+
+    if grep -q "^${search_pattern}" "$CHECKPOINT_FILE" 2>/dev/null; then
+        # Found entry, check if it's marked as completed
+        local status=$(grep "^${search_pattern}" "$CHECKPOINT_FILE" | tail -1 | cut -d'|' -f5)
+        if [ "$status" = "COMPLETED" ]; then
+            return 0  # Completed
+        fi
+    fi
+
+    return 1  # Not completed
+}
+
+# Validate existing audio file thoroughly
+validate_existing_audio_file()
+{
+    local file_path="$1"
+    local expected_duration="$2"
+
+    # Check if file exists
+    if [ ! -f "$file_path" ]; then
+        echo "File does not exist: $file_path"
+        return 1
+    fi
+
+    # Check file size (must be > 1KB)
+    local file_size
+    if stat --version 2>/dev/null | grep -q GNU; then
+        file_size=$(stat --format="%s" "$file_path" 2>/dev/null || echo "0")
+    else
+        file_size=$(stat -f%z "$file_path" 2>/dev/null || echo "0")
+    fi
+
+    if [ "$file_size" -le 1024 ]; then
+        echo "File too small ($file_size bytes): $file_path"
+        return 1
+    fi
+
+    # Validate audio format and get info using sox
+    if ! command -v sox >/dev/null 2>&1; then
+        echo "Warning: sox not available, skipping detailed audio validation"
+        echo "File size OK ($file_size bytes): $file_path"
+        return 0
+    fi
+
+    # Get audio file information
+    local audio_info
+    if ! audio_info=$(sox --info "$file_path" 2>/dev/null); then
+        echo "Invalid audio format: $file_path"
+        return 1
+    fi
+
+    # Extract duration from sox info
+    local duration
+    duration=$(echo "$audio_info" | grep "Duration" | sed -E 's/.*Duration[[:space:]]*:[[:space:]]*([0-9]+:[0-9]+\.[0-9]+).*/\1/' | head -1)
+
+    if [ -z "$duration" ]; then
+        echo "Could not determine audio duration: $file_path"
+        return 1
+    fi
+
+    # Convert duration to seconds (format: MM:SS.ss or HH:MM:SS.ss)
+    local duration_seconds
+    if [[ "$duration" =~ ^[0-9]+:[0-9]+\.[0-9]+$ ]]; then
+        # Format: MM:SS.ss
+        local minutes=$(echo "$duration" | cut -d':' -f1)
+        local seconds=$(echo "$duration" | cut -d':' -f2)
+        duration_seconds=$(echo "$minutes * 60 + $seconds" | bc 2>/dev/null || echo "0")
+    elif [[ "$duration" =~ ^[0-9]+:[0-9]+:[0-9]+\.[0-9]+$ ]]; then
+        # Format: HH:MM:SS.ss
+        local hours=$(echo "$duration" | cut -d':' -f1)
+        local minutes=$(echo "$duration" | cut -d':' -f2)
+        local seconds=$(echo "$duration" | cut -d':' -f3)
+        duration_seconds=$(echo "$hours * 3600 + $minutes * 60 + $seconds" | bc 2>/dev/null || echo "0")
+    else
+        echo "Unrecognized duration format: $duration"
+        return 1
+    fi
+
+    # Check if duration is within acceptable range
+    local min_duration=$((expected_duration - AUDIO_VALIDATION_TOLERANCE_SECONDS))
+    local max_duration=$((expected_duration + AUDIO_VALIDATION_TOLERANCE_SECONDS))
+
+    if (( $(echo "$duration_seconds < $min_duration" | bc -l 2>/dev/null || echo "1") )); then
+        echo "Audio too short (${duration_seconds}s, expected ~${expected_duration}s): $file_path"
+        return 1
+    fi
+
+    if (( $(echo "$duration_seconds > $max_duration" | bc -l 2>/dev/null || echo "0") )); then
+        echo "Audio too long (${duration_seconds}s, expected ~${expected_duration}s): $file_path"
+        return 1
+    fi
+
+    # Check for silent audio by analyzing the audio content
+    local silence_check
+    if silence_check=$(sox "$file_path" -n stat 2>&1 | grep "Maximum amplitude" | awk '{print $3}' 2>/dev/null); then
+        if [ -n "$silence_check" ] && (( $(echo "$silence_check < 0.001" | bc -l 2>/dev/null || echo "0") )); then
+            echo "Audio appears to be silent (max amplitude: $silence_check): $file_path"
+            return 1
+        fi
+    fi
+
+    echo "✓ Audio validation passed (${duration_seconds}s, ${file_size} bytes): $file_path"
+    return 0
+}
+
+# Record completion of a recording task
+record_completion()
+{
+    local speaker="$1"
+    local mode_name="$2"
+    local source_filename="$3"
+    local output_path="$4"
+    local status="$5"  # COMPLETED, FAILED, SKIPPED
+
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+
+    # Add entry to checkpoint file
+    echo "${speaker}|${mode_name}|${source_filename}|${output_path}|${status}|${timestamp}" >> "$CHECKPOINT_FILE"
+}
+
+# Check if there are any previous recording sessions to resume
+check_for_resumable_session()
+{
+    if [ ! -f "$CHECKPOINT_FILE" ]; then
+        return 1  # No checkpoint file exists
+    fi
+
+    # Check if checkpoint file has any completed entries
+    if grep -q "|COMPLETED|" "$CHECKPOINT_FILE" 2>/dev/null; then
+        return 0  # Found resumable session
+    fi
+
+    return 1  # No completed recordings found
+}
+
+# Display resume confirmation and get user input
+confirm_resume_session()
+{
+    echo ""
+    echo "🔄 RESUMABLE SESSION DETECTED"
+    echo "============================================="
+    echo "Found existing recording progress. Previous session details:"
+    echo ""
+
+    # Display summary of previous progress
+    local total_completed=0
+    local total_failed=0
+    local total_skipped=0
+
+    if [ -f "$CHECKPOINT_FILE" ]; then
+        total_completed=$(grep -c "|COMPLETED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+        total_failed=$(grep -c "|FAILED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+        total_skipped=$(grep -c "|SKIPPED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+
+        echo "  ✅ Completed recordings: $total_completed"
+        echo "  ❌ Failed recordings: $total_failed"
+        echo "  ⏭️  Skipped recordings: $total_skipped"
+        echo ""
+
+        # Show recent entries
+        echo "Recent progress (last 5 entries):"
+        tail -5 "$CHECKPOINT_FILE" | grep -v "^#" | while IFS='|' read -r speaker mode_name source_file output_path status timestamp; do
+            if [ -n "$speaker" ]; then
+                local status_icon="❓"
+                case "$status" in
+                    "COMPLETED") status_icon="✅" ;;
+                    "FAILED") status_icon="❌" ;;
+                    "SKIPPED") status_icon="⏭️" ;;
+                esac
+                echo "    $status_icon $speaker/$mode_name/$(basename "$source_file") - $timestamp"
+            fi
+        done
+    fi
+
+    echo ""
+    echo "============================================="
+    echo ""
+
+    # Get user confirmation
+    while true; do
+        echo -n "Do you want to resume from the previous session? [y/N]: "
+        read -r response
+
+        case "$response" in
+            [Yy]|[Yy][Ee][Ss])
+                echo ""
+                echo "✅ Resuming from previous session..."
+                echo "Only new/failed recordings will be processed."
+                echo ""
+                return 0
+                ;;
+            [Nn]|[Nn][Oo]|"")
+                echo ""
+                echo "🔄 Starting fresh recording session..."
+                echo "Previous progress will be backed up and reset."
+                echo ""
+
+                # Backup existing checkpoint file
+                local backup_checkpoint="${CHECKPOINT_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+                cp "$CHECKPOINT_FILE" "$backup_checkpoint" 2>/dev/null
+                echo "Previous progress backed up to: $backup_checkpoint"
+
+                # Reset checkpoint file
+                echo "# Recording Progress Checkpoint File" > "$CHECKPOINT_FILE"
+                echo "# Generated on $(date)" >> "$CHECKPOINT_FILE"
+                echo "# Format: speaker|mode_name|source_filename|output_path|status|timestamp" >> "$CHECKPOINT_FILE"
+
+                return 1
+                ;;
+            *)
+                echo "Please answer 'y' for yes or 'n' for no."
+                ;;
+        esac
+    done
+}
+
+# Display checkpoint progress summary
+display_checkpoint_summary()
+{
+    if [ ! -f "$CHECKPOINT_FILE" ]; then
+        echo "No checkpoint data available."
+        return
+    fi
+
+    echo ""
+    echo "📊 CHECKPOINT SUMMARY"
+    echo "===================="
+
+    local total_completed=$(grep -c "|COMPLETED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+    local total_failed=$(grep -c "|FAILED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+    local total_skipped=$(grep -c "|SKIPPED|" "$CHECKPOINT_FILE" 2>/dev/null || echo "0")
+    local total_entries=$((total_completed + total_failed + total_skipped))
+
+    echo "Total recording tasks: $total_entries"
+    echo "  ✅ Completed: $total_completed"
+    echo "  ❌ Failed: $total_failed"
+    echo "  ⏭️  Skipped: $total_skipped"
+
+    if [ $total_entries -gt 0 ]; then
+        local completion_percentage=$((total_completed * 100 / total_entries))
+        echo "  📈 Success rate: ${completion_percentage}%"
+    fi
+
+    # Show breakdown by speaker and mode
+    echo ""
+    echo "Breakdown by speaker and mode:"
+    for speaker in "${speakers[@]}"; do
+        for mode_index in "${!modes[@]}"; do
+            local mode_name="${mode_names[$mode_index]}"
+            local completed=$(grep "^${speaker}|${mode_name}|.*|COMPLETED|" "$CHECKPOINT_FILE" 2>/dev/null | wc -l | tr -d ' ')
+            local failed=$(grep "^${speaker}|${mode_name}|.*|FAILED|" "$CHECKPOINT_FILE" 2>/dev/null | wc -l | tr -d ' ')
+            local skipped=$(grep "^${speaker}|${mode_name}|.*|SKIPPED|" "$CHECKPOINT_FILE" 2>/dev/null | wc -l | tr -d ' ')
+
+            if [ $((completed + failed + skipped)) -gt 0 ]; then
+                echo "  $speaker/$mode_name: ✅$completed ❌$failed ⏭️$skipped"
+            fi
+        done
+    done
+
+    echo "===================="
+}
 
 # UTILITY FUNCTIONS
 # =================

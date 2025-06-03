@@ -1,6 +1,7 @@
 #!/bin/bash
+
 # =============================================================================
-# AUDIO RECORDING ENGINE
+# AUDIO RECORDING ENGINE WITH CHECKPOINT SYSTEM
 # =============================================================================
 #
 # ⚠️  DESTRUCTIVE OPERATION - OVERWRITES EXISTING RECORDINGS
@@ -8,10 +9,18 @@
 # Records audio modified by Teensy hardware in 4 modes: Noise, PitchShift,
 # Wave, and All. Processes test files for all 3 speakers.
 #
+# NEW: CHECKPOINT & RESUME SYSTEM
+# -------------------------------
+# ✅ Automatically detects interrupted sessions
+# ✅ Asks for confirmation before resuming
+# ✅ Validates existing recordings thoroughly
+# ✅ Skips already completed work
+# ✅ Provides detailed progress tracking
+#
 # CRITICAL WARNING:
 # -----------------
-# 🔴 DELETES all existing files in working-evaluation/
-# 🔴 Records fresh modified audio (20-45 minutes)
+# 🔴 DELETES all existing files in working-evaluation/ (if starting fresh)
+# 🔴 Records fresh modified audio (20-45 minutes for full session)
 # 🔴 Cannot be undone - backup precious recordings first!
 #
 # BACKUP BEFORE RUNNING:
@@ -27,16 +36,19 @@
 # PROCESS:
 # --------
 # For each test audio file:
-#   1. Send mode command to Teensy (n/p/w/a)
-#   2. Play original audio through Teensy
-#   3. Record modified output
-#   4. Verify recording quality (>1KB)
-#   5. Generate tracking report
+#   1. Check if already completed (checkpoint system)
+#   2. Send mode command to Teensy (n/p/w/a)
+#   3. Play original audio through Teensy
+#   4. Record modified output
+#   5. Validate recording thoroughly (size, format, duration, content)
+#   6. Update checkpoint file
+#   7. Generate tracking report
 #
 # INTERRUPTION HANDLING:
 # ----------------------
 # - Ctrl+C saves partial results
 # - Restores original audio devices
+# - Maintains checkpoint file for resume
 # - Creates termination report
 #
 # AUTOMATIC INTEGRATION:
@@ -65,15 +77,23 @@ cleanup() {
   EARLY_TERMINATION=1
 
   # Update tracking file
-  # Update tracking file with termination notice
   echo "" >> $TRACKING_FILE
   echo "PROCESS TERMINATED EARLY: $(date)" >> $TRACKING_FILE
   echo "----------------------------------------" >> $TRACKING_FILE
+
+  # Update checkpoint file with termination notice
+  if [ -f "$CHECKPOINT_FILE" ]; then
+    echo "# Session terminated early: $(date)" >> $CHECKPOINT_FILE
+  fi
+
+  # Display checkpoint summary
+  display_checkpoint_summary
 
   # Return audio devices to original settings if possible
   restore_original_audio_sources
 
   echo "Termination cleanup complete. Partial results saved."
+  echo "You can resume this session later by running the script again."
   exit 1
 }
 
@@ -125,11 +145,36 @@ increment_files_modified() {
   set_files_modified "$speaker" "$mode" $((current + 1))
 }
 
-print_header "Audio Recording"
+print_header "Audio Recording with Checkpoint System"
 
 # Initialize Counters
 total_processed=0
+total_skipped=0
 EARLY_TERMINATION=0
+RESUME_MODE=false
+
+# INITIALIZE CHECKPOINT SYSTEM
+# ============================
+echo "Initializing checkpoint system..."
+
+if ! initialize_checkpoint_system "$WORKING_DIR"; then
+    echo "ERROR: Failed to initialize checkpoint system"
+    exit 1
+fi
+
+# Check for resumable session
+if check_for_resumable_session; then
+    if confirm_resume_session; then
+        RESUME_MODE=true
+        echo "📋 Resume mode enabled. Checking existing recordings..."
+    else
+        RESUME_MODE=false
+        echo "🔄 Fresh session mode. All recordings will be processed."
+    fi
+else
+    echo "🆕 No previous session found. Starting fresh recording session."
+    RESUME_MODE=false
+fi
 
 # COMPREHENSIVE HARDWARE VALIDATION
 # ==================================
@@ -189,6 +234,11 @@ echo "Teensy audio configuration complete!"
 # Create a report for tracking our progress
 echo "FILE MODIFICATION TRACKING REPORT" > $TRACKING_FILE
 echo "Generated on $(date)" >> $TRACKING_FILE
+if [ "$RESUME_MODE" = "true" ]; then
+    echo "Mode: RESUME - Continuing from previous session" >> $TRACKING_FILE
+else
+    echo "Mode: FRESH - New recording session" >> $TRACKING_FILE
+fi
 echo "----------------------------------------" >> $TRACKING_FILE
 
 # Process each speaker in the array
@@ -226,15 +276,42 @@ for speaker in ${speakers[@]}; do
     ((current_file++))
 
     display_name=$(basename "$file")
+    source_filename=$(basename "$file")
     echo ""
     echo "PROCESSING FILE $current_file of $source_file_count: $display_name"
     echo "---------------------------------------------------------"
 
-    file_status="Success"  # Track if all modifications for this file succeeded\
+    file_status="Success"  # Track if all modifications for this file succeeded
 
     for mode_index in "${!modes[@]}"; do # Play and record each file in each mode
       mode="${modes[mode_index]}"
       mode_name="${mode_names[mode_index]}"
+
+      basename=$(basename "$file" ".wav")
+      filename=$basename-$mode_name.wav
+      output_path="$WORKING_DIR/$mode_name/$speaker/$filename"
+
+      # CHECK CHECKPOINT: Skip if already completed
+      if [ "$RESUME_MODE" = "true" ] && is_recording_completed "$speaker" "$mode_name" "$source_filename"; then
+        echo "  Mode: $mode_name ($mode) [$(($mode_index+1)) of ${#modes[@]}] - CHECKING EXISTING..."
+
+        # Validate existing file thoroughly
+        if validate_existing_audio_file "$output_path" "$EXPECTED_AUDIO_DURATION_SECONDS"; then
+          echo "  ✅ SKIPPED - Valid recording already exists: $output_path"
+          increment_files_modified "$speaker" "$mode"
+          increment_total_files_created "$speaker"
+          ((total_processed++))
+          ((total_skipped++))
+
+          # Log skip in tracking file
+          echo "  - $basename ($mode): Skipped - Valid existing file" >> $TRACKING_FILE
+          continue
+        else
+          echo "  ⚠️ EXISTING FILE INVALID - Re-recording: $output_path"
+          # Mark as failed in checkpoint and continue with recording
+          record_completion "$speaker" "$mode_name" "$source_filename" "$output_path" "FAILED"
+        fi
+      fi
 
       # Periodic hardware check during long recording sessions
       if ! check_hardware_during_recording "$device"; then
@@ -244,12 +321,9 @@ for speaker in ${speakers[@]}; do
       fi
 
       echo $mode > $device
-      basename=$(basename "$file" ".wav")
-      filename=$basename-$mode_name.wav
-      output_path="$WORKING_DIR/$mode_name/$speaker/$filename"
 
       # Play the file and record
-      echo "  Mode: $mode_name ($mode) [$(($mode_index+1)) of ${#modes[@]}]"
+      echo "  Mode: $mode_name ($mode) [$(($mode_index+1)) of ${#modes[@]}] - RECORDING..."
 
       # Check for termination request before starting new recording
       if [ $EARLY_TERMINATION -eq 1 ]; then
@@ -269,45 +343,39 @@ for speaker in ${speakers[@]}; do
 
       # Check if recording was successful
       if [ $rec_status -eq 0 ] && [ -f "$output_path" ]; then
-        # Recording was successful, continue processing
-
-        # Get the file size to verify its a valid recording (more than 1kb)
-        # Check file size - use platform-independent approach
-        if [ -f "$output_path" ]; then
-          # Try different stat formats based on OS
-          if stat --version 2>/dev/null | grep -q GNU; then
-            # GNU stat (Linux)
-            filesize=$(stat --format="%s" "$output_path" 2>/dev/null || echo "0")
-          else
-            # BSD stat (macOS)
-            filesize=$(stat -f%z "$output_path" 2>/dev/null || echo "0")
-          fi
-
-          # Make sure filesize is a number
-          if ! [[ "$filesize" =~ ^[0-9]+$ ]]; then
-            filesize=0
-          fi
-        else
-          filesize=0
-        fi
-
-        if [ $filesize -gt 1024 ]; then
-          echo "Recording complete and verified: $output_path ($filesize bytes)"
+        # Recording was successful, validate thoroughly
+        if validate_existing_audio_file "$output_path" "$EXPECTED_AUDIO_DURATION_SECONDS"; then
+          echo "  ✅ Recording complete and validated: $output_path"
           increment_files_modified "$speaker" "$mode"
           increment_total_files_created "$speaker"
           ((total_processed++))
+
+          # Record successful completion in checkpoint
+          record_completion "$speaker" "$mode_name" "$source_filename" "$output_path" "COMPLETED"
+
+          # Log success in tracking file
+          echo "  - $basename ($mode): Success" >> $TRACKING_FILE
         else
-          echo "⚠️ WARNING: Recording may be corrupt or empty: $output_path ($filesize bytes)"
-          file_status="Failed - Small File"
+          echo "  ❌ Recording validation failed: $output_path"
+          file_status="Failed - Validation Failed"
+
+          # Record failure in checkpoint
+          record_completion "$speaker" "$mode_name" "$source_filename" "$output_path" "FAILED"
+
+          # Log failure in tracking file
+          echo "  - $basename ($mode): Failed - Validation Failed" >> $TRACKING_FILE
         fi
       else
         # Recording failed
-        echo "⚠️ ERROR: Recording failed for $output_path"
+        echo "  ❌ Recording failed: $output_path"
         file_status="Failed - Recording Error"
-      fi
 
-      # Log individual file results
-      echo "  - $basename ($mode): $file_status" >> $TRACKING_FILE
+        # Record failure in checkpoint
+        record_completion "$speaker" "$mode_name" "$source_filename" "$output_path" "FAILED"
+
+        # Log failure in tracking file
+        echo "  - $basename ($mode): Failed - Recording Error" >> $TRACKING_FILE
+      fi
     done
     echo "---------------------------------------------------------"
   done
@@ -329,6 +397,7 @@ done
 echo "" >> $TRACKING_FILE
 echo "OVERALL SUMMARY:" >> $TRACKING_FILE
 echo "Total audio files processed: $total_processed" >> $TRACKING_FILE
+echo "Total files skipped (existing): $total_skipped" >> $TRACKING_FILE
 
 # Calculate totals by mode across all speakers
 for mode_index in "${!modes[@]}"; do
@@ -353,6 +422,7 @@ if [ $EARLY_TERMINATION -eq 1 ]; then
   echo "⚠️ PROCESS WAS TERMINATED EARLY"
 fi
 echo "Total files processed: $total_processed"
+echo "Total files skipped (valid existing): $total_skipped"
 
 for speaker in "${speakers[@]}"; do
   # Calculate expected number of files (source files × number of modes)
@@ -376,10 +446,21 @@ for speaker in "${speakers[@]}"; do
     echo "  - $mode_name mode: $(get_files_modified "$speaker" "$mode")"
   done
 done
+
 echo ""
 echo "Check $TRACKING_FILE for detailed report"
+
+# Display final checkpoint summary
+display_checkpoint_summary
+
 echo "==============================================="
 
 # Return audio devices to original settings at the end of processing
 restore_original_audio_sources
-echo "Audio recording completed!"
+echo ""
+echo "🎉 Audio recording completed!"
+if [ "$RESUME_MODE" = "true" ]; then
+    echo "📋 Checkpoint file saved for future reference: $CHECKPOINT_FILE"
+else
+    echo "💾 Checkpoint file created for future recovery: $CHECKPOINT_FILE"
+fi
