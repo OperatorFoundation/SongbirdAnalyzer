@@ -89,7 +89,8 @@ check_prerequisites() {
 }
 
 # Training pipeline
-run_training() {
+run_training()
+{
     print_header "TRAINING PIPELINE"
     
     print_status "Step 1: Download and prepare audio data..."
@@ -125,7 +126,7 @@ run_training() {
     done
 
     print_status "Step 2: Split audio files into segments..."
-    ./splitall.sh "$SPEAKERS_DIR" "$TRAINING_WORKING_DIR"
+    ./splitall.sh "$SPEAKERS_DIR" "$TRAINING_WORKING_DIR" $FORCE_FLAG
     
     print_status "Step 3: Extract MFCC features..."
     python3 automfcc.py "$TRAINING_WORKING_DIR" "$TRAINING_RESULTS_FILE"
@@ -142,7 +143,8 @@ run_training() {
 }
 
 # Evaluation pipeline
-run_evaluation() {
+run_evaluation()
+{
     print_header "EVALUATION PIPELINE"
     
     # Check if training has been completed
@@ -162,7 +164,7 @@ run_evaluation() {
     fi
     
     print_status "Step 1: Setup evaluation environment..."
-    ./evaluation-setup-environment.sh
+    ./evaluation-setup-environment.sh $FORCE_FLAG
     
     print_status "Step 2: Record modified audio..."
     if command -v SwitchAudioSource &>/dev/null; then
@@ -260,8 +262,26 @@ show_status() {
 }
 
 # Main script logic
-main() {
-    COMMAND=${1:-"help"}
+main()
+{
+    # Parse command line arguments
+    COMMAND=""
+    FORCE_FLAG=""
+
+    for arg in "$@"; do
+        case $arg in
+            --force)
+                FORCE_FLAG="--force"
+                ;;
+            *)
+                if [ -z "$COMMAND" ]; then
+                    COMMAND="$arg"
+                fi
+                ;;
+        esac
+    done
+
+    COMMAND=${COMMAND:-"help"}
     
     case $COMMAND in
         "full")
@@ -269,7 +289,7 @@ main() {
             run_training
             echo ""
             print_warning "Ready for evaluation! Connect your Teensy device and run:"
-            print_warning "  $0 evaluation"
+            print_warning "  $0 evaluation $FORCE_FLAG"
             ;;
         "training")
             check_prerequisites
@@ -292,7 +312,7 @@ main() {
         "help"|*)
             echo "Songbird Analysis Pipeline"
             echo ""
-            echo "Usage: $0 [command]"
+            echo "Usage: $0 [command] [--force]"
             echo ""
             echo "Commands:"
             echo "  full       - Run complete training pipeline (stops before evaluation)"
@@ -303,10 +323,13 @@ main() {
             echo "  clean      - Remove all generated files and start fresh"
             echo "  help       - Show this help message"
             echo ""
+            echo "Options:"
+            echo "  --force    - Skip interactive prompts and automatically create backups"
+            echo ""
             echo "Typical workflow:"
-            echo "  1. $0 training          # Download, process, and train model"
-            echo "  2. $0 evaluation        # Record and analyze modified audio"
-            echo "  3. $0 quick             # Re-analyze if needed"
+            echo "  1. $0 training --force     # Download, process, and train model (auto-backup)"
+            echo "  2. $0 evaluation --force   # Record and analyze modified audio (auto-backup)"
+            echo "  3. $0 quick                # Re-analyze if needed"
             echo ""
             echo "For a fresh start:"
             echo "  $0 clean && $0 full"

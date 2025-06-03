@@ -1,5 +1,6 @@
 
 #!/bin/bash
+
 # =============================================================================
 # SHARED FUNCTIONS AND CONFIGURATION
 # =============================================================================
@@ -74,6 +75,13 @@ MODEL_FILE="songbird.pkl"
 DEVICE_NAME="Teensy MIDI_Audio" # The device name as it appears on macOS
 TRACKING_FILE="modified_audio_tracking_report.txt"
 
+# BACKUP AND RECOVERY CONFIGURATION
+# ==================================
+BACKUP_ROOT_DIR="backups"
+BACKUP_TIMESTAMP_FORMAT="%Y%m%d_%H%M%S"
+MAX_BACKUPS_TO_KEEP=2
+
+
 # MODIFICATION MODES
 # ==================
 modes=("n" "p" "w" "a")
@@ -83,7 +91,10 @@ mode_names=("Noise" "PitchShift" "Wave" "All")
 # ==========================
 
 # Get all configured speaker IDs
-get_speakers() { echo "${speakers[@]}" }
+get_speakers()
+{
+  echo "${speakers[@]}"
+}
 
 # Find the array index for a speaker ID
 get_speaker_index()
@@ -92,15 +103,15 @@ get_speaker_index()
   local index=0
 
   for configured_speaker in "${speakers[@]}"; do
-    if [[ "$configured_speaker" == "$speaker_id"]]; then
+    if [[ "$configured_speaker" == "$speaker_id" ]]; then
       echo "$index"
       return 0
     fi
     ((index++))
   done
 
-    echo "-1"  # Not found
-    return 1
+  echo "-1"  # Not found
+  return 1
 }
 
 # Get download URL for a specific speaker
@@ -117,7 +128,8 @@ get_speaker_url()
 }
 
 # Get cleanup files for a specific speaker
-get_speaker_cleanup_files() {
+get_speaker_cleanup_files()
+{
     local speaker_id="$1"
     local index=$(get_speaker_index "$speaker_id")
 
@@ -201,7 +213,8 @@ check_audio_device()
   return $?
 }
 
-find_teensy_device() {
+find_teensy_device()
+{
   # List all usb devices and grep for Teensy
   local device_list=$(ioreg -p IOUSB -l -w 0 | grep -i teensy -A10 | grep "IODialinDevice" | sed -e 's/.*= "//' -e 's/".*//')
 
@@ -214,7 +227,6 @@ find_teensy_device() {
   # Return the first device found or empty
   echo "$device_list" | head -n1
 }
-
 
 # HARDWARE VALIDATION CONFIGURATION
 # ==================================
@@ -479,28 +491,410 @@ check_hardware_during_recording()
     return 0
 }
 
+# BACKUP AND RECOVERY CONFIGURATION
+# ==================================
+BACKUP_ROOT_DIR="backups"
+BACKUP_TIMESTAMP_FORMAT="%Y%m%d_%H%M%S"
+MAX_BACKUPS_TO_KEEP=10
+
+# BACKUP SYSTEM FUNCTIONS
+# ========================
+
+# Create a timestamped backup of a directory
+create_backup()
+{
+    local source_dir="$1"
+    local backup_name="${2:-$(basename "$source_dir")}"
+
+    # Only backup if source directory exists and has content
+    if [ ! -d "$source_dir" ]; then
+        echo "No existing directory to backup: $source_dir"
+        return 0
+    fi
+
+    # Check if directory has any content
+    if [ -z "$(find "$source_dir" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+        echo "Directory $source_dir is empty, skipping backup"
+        return 0
+    fi
+
+    # Create backup root directory if it doesn't exist
+    mkdir -p "$BACKUP_ROOT_DIR"
+
+    # Generate timestamp and backup path
+    local timestamp=$(date +"$BACKUP_TIMESTAMP_FORMAT")
+    local backup_dir="$BACKUP_ROOT_DIR/${backup_name}_${timestamp}"
+
+    # Calculate size of directory to backup
+    local source_size
+    if command -v du >/dev/null 2>&1; then
+        source_size=$(du -sh "$source_dir" 2>/dev/null | cut -f1 || echo "unknown")
+    else
+        source_size="unknown"
+    fi
+
+    echo "Creating backup of $source_dir (${source_size})..."
+    echo "Backup location: $backup_dir"
+
+    # Create the backup using cp to preserve timestamps and permissions
+    if cp -R "$source_dir" "$backup_dir" 2>/dev/null; then
+        echo "✓ Backup created successfully: $backup_dir"
+
+        # Log backup creation
+        echo "$(date): Backup created - $backup_dir (source: $source_dir, size: $source_size)" >> "$BACKUP_ROOT_DIR/backup_log.txt"
+
+        # Clean up old backups
+        cleanup_old_backups "$backup_name"
+
+        return 0
+    else
+        echo "✗ ERROR: Failed to create backup of $source_dir"
+        return 1
+    fi
+}
+
+# Clean up old backups, keeping only the most recent ones
+cleanup_old_backups()
+{
+    local backup_prefix="$1"
+
+    # Find all backups for this prefix and sort by creation time (newest first)
+    local backup_dirs=($(find "$BACKUP_ROOT_DIR" -maxdepth 1 -type d -name "${backup_prefix}_*" | sort -r))
+
+    # If we have more backups than the limit, remove the oldest ones
+    if [ ${#backup_dirs[@]} -gt $MAX_BACKUPS_TO_KEEP ]; then
+        echo "Found ${#backup_dirs[@]} backups for $backup_prefix, keeping newest $MAX_BACKUPS_TO_KEEP..."
+
+        # Remove backups beyond the limit
+        for (( i=$MAX_BACKUPS_TO_KEEP; i<${#backup_dirs[@]}; i++ )); do
+            local old_backup="${backup_dirs[$i]}"
+            echo "Removing old backup: $(basename "$old_backup")"
+            rm -rf "$old_backup"
+
+            # Log cleanup
+            echo "$(date): Old backup removed - $old_backup" >> "$BACKUP_ROOT_DIR/backup_log.txt"
+        done
+    fi
+}
+
+# List all available backups
+list_backups()
+{
+    local backup_pattern="${1:-*}"
+
+    if [ ! -d "$BACKUP_ROOT_DIR" ]; then
+        echo "No backup directory found at $BACKUP_ROOT_DIR"
+        return 1
+    fi
+
+    echo "Available backups in $BACKUP_ROOT_DIR:"
+    echo "================================================"
+
+    # Find and sort backups
+    local backup_count=0
+    for backup_dir in $(find "$BACKUP_ROOT_DIR" -maxdepth 1 -type d -name "${backup_pattern}_*" | sort -r); do
+        if [ -d "$backup_dir" ]; then
+            local backup_name=$(basename "$backup_dir")
+            local backup_size
+            if command -v du >/dev/null 2>&1; then
+                backup_size=$(du -sh "$backup_dir" 2>/dev/null | cut -f1 || echo "unknown")
+            else
+                backup_size="unknown"
+            fi
+
+            # Extract timestamp from backup name
+            local timestamp_part=$(echo "$backup_name" | sed 's/.*_\([0-9]\{8\}_[0-9]\{6\}\)$/\1/')
+            local formatted_date=""
+            if [[ "$timestamp_part" =~ ^[0-9]{8}_[0-9]{6}$ ]]; then
+                # Format: YYYYMMDD_HHMMSS -> YYYY-MM-DD HH:MM:SS
+                formatted_date=$(echo "$timestamp_part" | sed 's/\([0-9]\{4\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)_\([0-9]\{2\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)/\1-\2-\3 \4:\5:\6/')
+            fi
+
+            if [ -n "$formatted_date" ]; then
+                echo "  $backup_name (${backup_size}) - Created: $formatted_date"
+            else
+                echo "  $backup_name (${backup_size})"
+            fi
+
+            ((backup_count++))
+        fi
+    done
+
+    if [ $backup_count -eq 0 ]; then
+        echo "  No backups found matching pattern: ${backup_pattern}_*"
+    else
+        echo "================================================"
+        echo "Total backups found: $backup_count"
+    fi
+}
+
+# Restore a backup to a target location
+restore_backup()
+{
+    local backup_name="$1"
+    local target_dir="$2"
+
+    if [ -z "$backup_name" ] || [ -z "$target_dir" ]; then
+        echo "Usage: restore_backup <backup_name> <target_directory>"
+        echo "Available backups:"
+        list_backups
+        return 1
+    fi
+
+    local backup_path="$BACKUP_ROOT_DIR/$backup_name"
+
+    if [ ! -d "$backup_path" ]; then
+        echo "ERROR: Backup not found: $backup_path"
+        echo "Available backups:"
+        list_backups
+        return 1
+    fi
+
+    # Warn if target directory already exists
+    if [ -d "$target_dir" ]; then
+        echo "WARNING: Target directory already exists: $target_dir"
+        echo "Restoration will overwrite existing content."
+        read -p "Continue? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Restoration cancelled."
+            return 1
+        fi
+
+        # Create backup of current target before restoration
+        create_backup "$target_dir" "pre_restore_$(basename "$target_dir")"
+    fi
+
+    echo "Restoring backup from $backup_path to $target_dir..."
+
+    # Create parent directory if needed
+    mkdir -p "$(dirname "$target_dir")"
+
+    # Remove target directory if it exists
+    if [ -d "$target_dir" ]; then
+        rm -rf "$target_dir"
+    fi
+
+    # Restore the backup
+    if cp -R "$backup_path" "$target_dir" 2>/dev/null; then
+        echo "✓ Backup restored successfully to: $target_dir"
+
+        # Log restoration
+        echo "$(date): Backup restored - $backup_path to $target_dir" >> "$BACKUP_ROOT_DIR/backup_log.txt"
+
+        return 0
+    else
+        echo "✗ ERROR: Failed to restore backup from $backup_path"
+        return 1
+    fi
+}
+
+# Get backup statistics
+show_backup_stats()
+{
+    if [ ! -d "$BACKUP_ROOT_DIR" ]; then
+        echo "No backup directory found."
+        return 1
+    fi
+
+    local total_backups=$(find "$BACKUP_ROOT_DIR" -maxdepth 1 -type d | wc -l)
+    ((total_backups--)) # Subtract 1 for the backup root directory itself
+
+    local total_size
+    if command -v du >/dev/null 2>&1; then
+        total_size=$(du -sh "$BACKUP_ROOT_DIR" 2>/dev/null | cut -f1 || echo "unknown")
+    else
+        total_size="unknown"
+    fi
+
+    echo "Backup Statistics:"
+    echo "=================="
+    echo "Backup directory: $BACKUP_ROOT_DIR"
+    echo "Total backups: $total_backups"
+    echo "Total backup size: $total_size"
+    echo "Max backups to keep: $MAX_BACKUPS_TO_KEEP"
+
+    if [ -f "$BACKUP_ROOT_DIR/backup_log.txt" ]; then
+        echo ""
+        echo "Recent backup activity:"
+        tail -5 "$BACKUP_ROOT_DIR/backup_log.txt" 2>/dev/null | sed 's/^/  /'
+    fi
+}
+
 # DIRECTORY STRUCTURE FUNCTIONS
 # ==============================
+# Setup function with force flag support
+safe_setup_working_directory()
+{
+    local target_directory="$1"
+    local force_mode="${2:-false}"
+    local directory_type="${3:-evaluation}"  # evaluation or training
+
+    echo "Preparing working directory: $target_directory"
+
+    # Create backup of existing directory if it exists and has content
+    if [ -d "$target_directory" ]; then
+        echo ""
+        echo "⚠️ WARNING: Existing working directory found: $target_directory"
+
+        # Check if directory has content
+        local file_count=$(find "$target_directory" -type f | wc -l | tr -d ' ')
+        if [ "$file_count" -gt 0 ]; then
+            echo "Directory contains $file_count files that will be lost if we proceed."
+            echo ""
+
+            if [ "$force_mode" = "true" ]; then
+                echo "Force mode enabled - automatically creating backup and proceeding..."
+                create_backup_decision="y"
+            else
+                echo "Options:"
+                echo "  y) Create backup and proceed"
+                echo "  n) Cancel operation"
+                echo "  f) Force proceed without backup (⚠️ DATA WILL BE LOST)"
+                echo ""
+                read -p "Your choice (y/n/f): " -r create_backup_decision
+            fi
+
+            case "${create_backup_decision,,}" in
+                "y"|"yes")
+                    echo "Creating backup before proceeding..."
+                    local backup_name="working-${directory_type}"
+
+                    if create_backup "$target_directory" "$backup_name"; then
+                        echo "✓ Existing data backed up successfully"
+                    else
+                        echo "✗ ERROR: Failed to create backup"
+                        echo "Cannot proceed without backing up existing data."
+                        return 1
+                    fi
+                    ;;
+                "f"|"force")
+                    echo "⚠️ WARNING: Proceeding without backup - data will be permanently lost!"
+                    if [ "$force_mode" != "true" ]; then
+                        read -p "Are you absolutely sure? Type 'DELETE' to confirm: " -r confirm_delete
+                        if [ "$confirm_delete" != "DELETE" ]; then
+                            echo "Operation cancelled."
+                            return 1
+                        fi
+                    fi
+                    echo "Skipping backup as requested..."
+                    ;;
+                "n"|"no"|*)
+                    echo "Operation cancelled by user."
+                    return 1
+                    ;;
+            esac
+        else
+            echo "Directory is empty, no backup needed."
+        fi
+
+        echo ""
+        echo "Removing existing directory..."
+        rm -rf "$target_directory"
+        echo "✓ Existing directory removed"
+    fi
+
+    echo ""
+    echo "Creating fresh directory structure..."
+    return 0
+}
 
 setup_working_directory()
 {
-  # Delete existing directories before starting a new run
-  echo "Cleaning previous output directories..."
-  if [ -d "$WORKING_DIR" ]; then
-    rm -rf "$WORKING_DIR"
-    echo "Deleted existing directory $WORKING_DIR"
-  fi
+    local force_mode="${1:-false}"
 
-  # Create directory structure organized by mode/speaker
-  for mode_index in "${!modes[@]}"; do
-    mode_name="${mode_names[$mode_index]}"
+    # Call the safe setup function
+    if ! safe_setup_working_directory "$WORKING_DIR" "$force_mode" "evaluation"; then
+        return 1
+    fi
 
-      for speaker_id in $(get_speakers); do
-          mkdir -p "$WORKING_DIR/$mode_name/$speaker_id"
-          echo "Created directory: $WORKING_DIR/$mode_name/$speaker_id"
-      done
-  done
+    # Create directory structure organized by mode/speaker
+    for mode_index in "${!modes[@]}"; do
+        mode_name="${mode_names[$mode_index]}"
+
+        for speaker_id in $(get_speakers); do
+            mkdir -p "$WORKING_DIR/$mode_name/$speaker_id"
+            echo "Created directory: $WORKING_DIR/$mode_name/$speaker_id"
+        done
+    done
+
+    echo "✓ Directory structure created successfully"
 }
+
+setup_training_working_directory()
+{
+    local training_working_dir="$1"
+    local force_mode="${2:-false}"
+
+    echo "Preparing training working directory: $training_working_dir"
+
+    # Apply safety checks for training directory
+    if [ -d "$training_working_dir" ]; then
+        echo ""
+        echo "⚠️ WARNING: Existing training working directory found: $training_working_dir"
+
+        # Check if directory has content
+        local file_count=$(find "$training_working_dir" -type f | wc -l | tr -d ' ')
+        if [ "$file_count" -gt 0 ]; then
+            echo "Directory contains $file_count files that will be regenerated."
+            echo ""
+
+            if [ "$force_mode" = "true" ]; then
+                echo "Force mode enabled - automatically creating backup and proceeding..."
+                create_backup_decision="y"
+            else
+                echo "Training data can be regenerated, but backup is available for safety."
+                echo "Options:"
+                echo "  y) Create backup and proceed"
+                echo "  n) Cancel operation"
+                echo "  s) Skip backup and proceed (training data is regenerable)"
+                echo ""
+                read -p "Your choice (y/n/s): " -r create_backup_decision
+            fi
+
+            case "${create_backup_decision,,}" in
+                "y"|"yes")
+                    echo "Creating backup before proceeding..."
+                    if create_backup "$training_working_dir" "working-training"; then
+                        echo "✓ Existing training data backed up successfully"
+                    else
+                        echo "✗ ERROR: Failed to create backup"
+                        echo "Cannot proceed without backing up existing data."
+                        return 1
+                    fi
+                    ;;
+                "s"|"skip")
+                    echo "Skipping backup for regenerable training data..."
+                    ;;
+                "n"|"no"|*)
+                    echo "Operation cancelled by user."
+                    return 1
+                    ;;
+            esac
+        else
+            echo "Directory is empty, no backup needed."
+        fi
+
+        echo ""
+        echo "Removing existing training directory..."
+        rm -rf "$training_working_dir"
+        echo "✓ Existing training directory removed"
+    fi
+
+    echo ""
+    echo "Creating fresh training directory structure..."
+
+    # Create speaker-specific directories for training
+    for speaker_id in $(get_speakers); do
+        if is_valid_speaker "$speaker_id"; then
+            mkdir -p "$training_working_dir/$speaker_id"
+            echo "Created directory: $training_working_dir/$speaker_id"
+        fi
+    done
+
+    echo "✓ Training directory structure created successfully"
+}
+
 
 # UTILITY FUNCTIONS
 # =================
