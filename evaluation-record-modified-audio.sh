@@ -131,15 +131,33 @@ print_header "Audio Recording"
 total_processed=0
 EARLY_TERMINATION=0
 
+# COMPREHENSIVE HARDWARE VALIDATION
+# ==================================
+echo "Performing comprehensive hardware validation before starting recording..."
+echo "This may take up to 30 seconds to complete all tests."
+echo ""
+
+if ! validate_hardware_setup; then
+    echo ""
+    echo "❌ CRITICAL ERROR: Hardware validation failed"
+    echo "Cannot proceed with audio recording until hardware issues are resolved."
+    exit 1
+fi
+
+echo ""
+echo "Hardware validation completed successfully. Starting recording process..."
+echo ""
+
+# Get the validated Teensy device path
 device=$(find_teensy_device)
 
-# check if the device was found
+# This should not fail since validation passed, but double-check
 if [ -z "$device" ]; then
   echo "⚠️ ERROR: Could not find a Teensy device. Is it connected?"
   exit 1
-else
-  echo "Found Teensy device at: $device"
 fi
+
+echo "Using validated Teensy device at: $device"
 
 # Configure serial communication settings
 # 115200 - Set baud rate to 115200 bps
@@ -217,6 +235,13 @@ for speaker in ${speakers[@]}; do
     for mode_index in "${!modes[@]}"; do # Play and record each file in each mode
       mode="${modes[mode_index]}"
       mode_name="${mode_names[mode_index]}"
+
+      # Periodic hardware check during long recording sessions
+      if ! check_hardware_during_recording "$device"; then
+          echo "⚠️ HARDWARE FAILURE DETECTED during recording!"
+          echo "Attempting to continue, but results may be compromised."
+          file_status="Failed - Hardware Issue"
+      fi
 
       echo $mode > $device
       basename=$(basename "$file" ".wav")

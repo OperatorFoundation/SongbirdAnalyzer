@@ -47,6 +47,13 @@ if ! command -v SwitchAudioSource &>/dev/null; then
   exit 1
 fi
 
+# Check if sox is installed (needed for hardware validation)
+if ! command -v sox &>/dev/null; then
+  echo "WARNING: sox not found. Install it with: brew install sox"
+  echo "Hardware validation will be limited without sox."
+fi
+
+
 # Save original audio sources before changing anything
 save_original_audio_sources
 
