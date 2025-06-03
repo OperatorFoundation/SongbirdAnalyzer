@@ -1,8 +1,10 @@
 #!/bin/bash
 # Script to split an audio file into segments of a specified maximum length
 
+source songbird-common.sh
+
 INPUT_FILE="$1"
-MAX_TIME="$2"
+MAX_TIME="${2:-$MAX_TIME}"  # Use parameter if provided, otherwise use default from songbird-common.sh
 OUTPUT_DIR="$3"
 
 BASE_NAME=$(basename "${INPUT_FILE%.*}")

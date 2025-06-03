@@ -1,7 +1,52 @@
 #!/bin/bash
+# =============================================================================
+# AUDIO RECORDING ENGINE
+# =============================================================================
+#
+# ⚠️  DESTRUCTIVE OPERATION - OVERWRITES EXISTING RECORDINGS
+#
+# Records audio modified by Teensy hardware in 4 modes: Noise, PitchShift,
+# Wave, and All. Processes test files for all 3 speakers.
+#
+# CRITICAL WARNING:
+# -----------------
+# 🔴 DELETES all existing files in working-evaluation/
+# 🔴 Records fresh modified audio (20-45 minutes)
+# 🔴 Cannot be undone - backup precious recordings first!
+#
+# BACKUP BEFORE RUNNING:
+# ----------------------
+# cp -r working-evaluation/ backup-$(date +%Y%m%d)/
+#
+# HARDWARE REQUIREMENTS:
+# ----------------------
+# - Teensy device connected and functional
+# - Teensy firmware responding to mode commands (n, p, w, a)
+# - Audio cables properly connected
+#
+# PROCESS:
+# --------
+# For each test audio file:
+#   1. Send mode command to Teensy (n/p/w/a)
+#   2. Play original audio through Teensy
+#   3. Record modified output
+#   4. Verify recording quality (>1KB)
+#   5. Generate tracking report
+#
+# INTERRUPTION HANDLING:
+# ----------------------
+# - Ctrl+C saves partial results
+# - Restores original audio devices
+# - Creates termination report
+#
+# AUTOMATIC INTEGRATION:
+# ----------------------
+# Called by songbird-pipeline.sh evaluation
+#
+# =============================================================================
 
 # Source common functions
-source ./common-functions.sh
+source songbird-common.sh
 
 # Register signal handlers for cleanup
 trap cleanup SIGINT SIGTERM SIGHUP

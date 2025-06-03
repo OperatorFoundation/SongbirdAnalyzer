@@ -1,7 +1,39 @@
 #!/bin/bash
+# =============================================================================
+# MFCC FEATURE EXTRACTION FOR EVALUATION
+# =============================================================================
+#
+# Extracts MFCC features from recorded modified audio files.
+#
+# FUNCTION:
+# ---------
+# - Processes all audio in working-evaluation/
+# - Extracts MFCC, Delta, and Delta2 features
+# - Outputs to results/evaluation.csv
+#
+# PREREQUISITES:
+# --------------
+# - working-evaluation/ must contain recorded modified audio
+# - Python environment with librosa and pandas
+#
+# SAFETY:
+# -------
+# 🟢 SAFE - Read-only operation on recordings
+# 📝 Creates new CSV file, doesn't modify audio
+#
+# OUTPUT:
+# -------
+# results/evaluation.csv - MFCC features for all recorded files
+#
+# INTEGRATION:
+# ------------
+# Called by songbird-pipeline.sh evaluation and quick
+# Uses automfcc.py for feature extraction
+#
+# =============================================================================
 
 # Source common functions
-source ./common-functions.sh
+source songbird-common.sh
 
 print_header "MFCC Processing"
 
