@@ -34,7 +34,6 @@
 #
 # =============================================================================
 
-
 import pandas as pd
 import numpy as np
 import sys
@@ -44,7 +43,15 @@ import json
 
 
 def categorize_columns(columns):
-    """Categorize columns into MFCC, Delta, and Delta2"""
+    """
+    Categorize columns into MFCC, Delta, and Delta2 types.
+
+    Args:
+        columns: List of column names to categorize
+
+    Returns:
+        dict: Dictionary with 'MFCC', 'Delta', 'Delta2' keys containing sorted column lists
+    """
     categories = {'MFCC': [], 'Delta': [], 'Delta2': []}
 
     for col in columns:
@@ -63,14 +70,39 @@ def categorize_columns(columns):
     return categories
 
 
-def standardize_to_training_dimensions(file_path, reference_dims):
-    """Standardize a file to match training dimensions"""
-    print(f"  📄 Processing: {file_path}")
-    df = pd.read_csv(file_path)
-    categories = categorize_columns(df.columns)
+def extract_reference_dimensions(df):
+    """
+    Extract reference dimensions from training data.
 
-    # Keep only the columns that exist in training, up to training limits
+    Args:
+        df: DataFrame containing training data
+
+    Returns:
+        dict: Dictionary with feature category dimensions
+    """
+    categories = categorize_columns(df.columns)
+    reference_dims = {cat: len(cols) for cat, cols in categories.items()}
+    return reference_dims
+
+
+def get_standardized_columns(df, reference_dims):
+    """
+    Determine which columns to keep based on reference dimensions.
+
+    Args:
+        df: DataFrame to standardize
+        reference_dims: Dictionary with reference dimensions for each category
+
+    Returns:
+        tuple: (columns_to_keep, standardization_info)
+    """
+    categories = categorize_columns(df.columns)
     columns_to_keep = []
+    standardization_info = {
+        'trimmed': {},
+        'warnings': [],
+        'missing_columns': []
+    }
 
     # Add non-feature columns first (speaker, wav_file, etc.)
     for col in df.columns:
@@ -83,27 +115,281 @@ def standardize_to_training_dimensions(file_path, reference_dims):
         columns_to_keep.extend(available_cols)
 
         if len(categories[category]) > limit:
-            print(f"    ✂️  Trimmed {category}: {len(categories[category])} → {limit}")
+            standardization_info['trimmed'][category] = {
+                'from': len(categories[category]),
+                'to': limit
+            }
         elif len(categories[category]) < limit:
-            print(
-                f"    ⚠️  Warning: {category} has fewer columns ({len(categories[category])}) than reference ({limit})")
+            standardization_info['warnings'].append({
+                'category': category,
+                'available': len(categories[category]),
+                'expected': limit
+            })
 
-    # Ensure all columns exist in the dataframe
+    # Check for missing columns
     existing_columns = [col for col in columns_to_keep if col in df.columns]
-    if len(existing_columns) != len(columns_to_keep):
-        missing = set(columns_to_keep) - set(existing_columns)
-        print(f"    ⚠️  Warning: Missing columns: {missing}")
+    missing = set(columns_to_keep) - set(existing_columns)
+    if missing:
+        standardization_info['missing_columns'] = list(missing)
 
-    df_standardized = df[existing_columns]
+    return existing_columns, standardization_info
+
+
+def standardize_dataframe_to_dimensions(df, reference_dims):
+    """
+    Standardize a DataFrame to match reference dimensions.
+
+    Args:
+        df: DataFrame to standardize
+        reference_dims: Dictionary with reference dimensions
+
+    Returns:
+        tuple: (standardized_df, standardization_info)
+    """
+    columns_to_keep, standardization_info = get_standardized_columns(df, reference_dims)
+    df_standardized = df[columns_to_keep]
+
+    return df_standardized, standardization_info
+
+
+def save_reference_dimensions(reference_dims, reference_file):
+    """
+    Save reference dimensions to JSON file.
+
+    Args:
+        reference_dims: Dictionary with reference dimensions
+        reference_file: Path to save the reference file
+
+    Returns:
+        str: Path to saved file
+    """
+    with open(reference_file, "w") as f:
+        json.dump(reference_dims, f, indent=2)
+    return reference_file
+
+
+def load_reference_dimensions(reference_file):
+    """
+    Load reference dimensions from JSON file.
+
+    Args:
+        reference_file: Path to the reference file
+
+    Returns:
+        dict: Reference dimensions
+
+    Raises:
+        FileNotFoundError: If reference file doesn't exist
+    """
+    try:
+        with open(reference_file, "r") as f:
+            reference_dims = json.load(f)
+        return reference_dims
+    except FileNotFoundError:
+        raise FileNotFoundError(f"No reference dimensions found at {reference_file}")
+
+
+def print_standardization_info(standardization_info, file_path=None):
+    """
+    Print standardization information in a formatted way.
+
+    Args:
+        standardization_info: Dictionary containing standardization details
+        file_path: Optional file path for context
+    """
+    if file_path:
+        print(f"  📄 Processing: {file_path}")
+
+    # Print trimming information
+    for category, info in standardization_info.get('trimmed', {}).items():
+        print(f"    ✂️  Trimmed {category}: {info['from']} → {info['to']}")
+
+    # Print warnings
+    for warning in standardization_info.get('warnings', []):
+        print(
+            f"    ⚠️  Warning: {warning['category']} has fewer columns ({warning['available']}) than reference ({warning['expected']})")
+
+    # Print missing columns
+    if standardization_info.get('missing_columns'):
+        print(f"    ⚠️  Warning: Missing columns: {set(standardization_info['missing_columns'])}")
+
+
+def standardize_file_to_training_dimensions(file_path, reference_dims, config=None):
+    """
+    Standardize a CSV file to match training dimensions.
+
+    Args:
+        file_path: Path to the CSV file to standardize
+        reference_dims: Dictionary with reference dimensions
+        config: Optional configuration dict
+
+    Returns:
+        tuple: (output_path, standardized_shape, standardization_info)
+    """
+    if config is None:
+        config = {}
+
+    enable_printing = config.get('enable_printing', True)
+    output_suffix = config.get('output_suffix', '_standardized')
+
+    if enable_printing:
+        print(f"  📄 Processing: {file_path}")
+
+    # Load and standardize data
+    df = pd.read_csv(file_path)
+    df_standardized, standardization_info = standardize_dataframe_to_dimensions(df, reference_dims)
+
+    # Print standardization info if enabled
+    if enable_printing:
+        print_standardization_info(standardization_info)
 
     # Save standardized version
-    output_path = file_path.replace('.csv', '_standardized.csv')
+    output_path = file_path.replace('.csv', f'{output_suffix}.csv')
     df_standardized.to_csv(output_path, index=False)
 
-    return output_path, df_standardized.shape
+    return output_path, df_standardized.shape, standardization_info
+
+
+def process_training_mode(training_file="results/training.csv", config=None):
+    """
+    Process training mode: analyze training data and set feature dimension standards.
+
+    Args:
+        training_file: Path to training data file
+        config: Optional configuration dict
+
+    Returns:
+        dict: Processing results including dimensions and file paths
+    """
+    if config is None:
+        config = {}
+
+    enable_printing = config.get('enable_printing', True)
+    output_dir = config.get('output_dir', 'results')
+
+    if enable_printing:
+        print("🔧 TRAINING MODE: Setting feature dimension standards")
+
+    # Check if training file exists
+    if not os.path.exists(training_file):
+        raise FileNotFoundError(f"Training file {training_file} not found!")
+
+    if enable_printing:
+        print(f"📖 Reading training data from: {training_file}")
+
+    # Load and analyze training data
+    df = pd.read_csv(training_file)
+    reference_dims = extract_reference_dimensions(df)
+
+    if enable_printing:
+        print("📏 Feature dimensions found:")
+        for category, count in reference_dims.items():
+            print(f"  {category}: {count} columns")
+
+    # Create standardized training file
+    df_standardized, _ = standardize_dataframe_to_dimensions(df, reference_dims)
+
+    # Save standardized training data
+    output_file = os.path.join(output_dir, "training_standardized.csv")
+    df_standardized.to_csv(output_file, index=False)
+
+    # Save reference dimensions
+    reference_file = os.path.join(output_dir, "feature_dimensions.json")
+    save_reference_dimensions(reference_dims, reference_file)
+
+    if enable_printing:
+        print(f"✅ Training data standardized: {df_standardized.shape}")
+        print(f"💾 Saved to: {output_file}")
+        print(f"📐 Reference dimensions saved to: {reference_file}")
+
+    return {
+        'reference_dims': reference_dims,
+        'output_file': output_file,
+        'reference_file': reference_file,
+        'standardized_shape': df_standardized.shape,
+        'original_shape': df.shape
+    }
+
+
+def process_evaluation_mode(evaluation_file="results/evaluation.csv",
+                            reference_file="results/feature_dimensions.json",
+                            config=None):
+    """
+    Process evaluation mode: standardize evaluation data to match training dimensions.
+
+    Args:
+        evaluation_file: Path to evaluation data file
+        reference_file: Path to reference dimensions file
+        config: Optional configuration dict
+
+    Returns:
+        dict: Processing results including output path and standardization info
+    """
+    if config is None:
+        config = {}
+
+    enable_printing = config.get('enable_printing', True)
+
+    if enable_printing:
+        print("🎯 EVALUATION MODE: Standardizing to match training dimensions")
+
+    # Load reference dimensions
+    reference_dims = load_reference_dimensions(reference_file)
+
+    if enable_printing:
+        print(f"📐 Loaded reference dimensions from: {reference_file}")
+        for category, count in reference_dims.items():
+            print(f"  {category}: {count} columns")
+
+    # Check if evaluation file exists
+    if not os.path.exists(evaluation_file):
+        raise FileNotFoundError(f"Evaluation file {evaluation_file} not found!")
+
+    # Standardize evaluation file
+    output_path, shape, standardization_info = standardize_file_to_training_dimensions(
+        evaluation_file, reference_dims, config)
+
+    if enable_printing:
+        print(f"✅ Evaluation data standardized: {shape}")
+        print(f"💾 Output: {output_path}")
+
+    return {
+        'output_path': output_path,
+        'standardized_shape': shape,
+        'standardization_info': standardization_info,
+        'reference_dims': reference_dims
+    }
+
+
+def standardize_features_pipeline(mode, config=None):
+    """
+    Main standardization pipeline that handles both training and evaluation modes.
+
+    Args:
+        mode: Either 'training' or 'evaluation'
+        config: Optional configuration dict
+
+    Returns:
+        dict: Processing results
+    """
+    if config is None:
+        config = {}
+
+    if mode == "training":
+        training_file = config.get('training_file', "results/training.csv")
+        return process_training_mode(training_file, config)
+
+    elif mode == "evaluation":
+        evaluation_file = config.get('evaluation_file', "results/evaluation.csv")
+        reference_file = config.get('reference_file', "results/feature_dimensions.json")
+        return process_evaluation_mode(evaluation_file, reference_file, config)
+
+    else:
+        raise ValueError(f"Unknown mode: {mode}. Use 'training' or 'evaluation'")
 
 
 def main():
+    """CLI wrapper function that handles command-line arguments and calls the core pipeline."""
     if len(sys.argv) < 2:
         print("Usage: python3 standardize_features.py [training|evaluation]")
         print("  training   - Analyze training data and set feature dimension standards")
@@ -112,82 +398,27 @@ def main():
 
     mode = sys.argv[1]
 
-    if mode == "training":
-        print("🔧 TRAINING MODE: Setting feature dimension standards")
+    try:
+        # Call the main standardization pipeline
+        results = standardize_features_pipeline(mode)
 
-        # For training mode, find the minimum dimensions and set as reference
-        training_file = "results/training.csv"
-
-        if not os.path.exists(training_file):
-            print(f"❌ Training file {training_file} not found!")
-            sys.exit(1)
-
-        print(f"📖 Reading training data from: {training_file}")
-        df = pd.read_csv(training_file)
-        categories = categorize_columns(df.columns)
-
-        # Save reference dimensions
-        reference_dims = {cat: len(cols) for cat, cols in categories.items()}
-
-        print("📏 Feature dimensions found:")
-        for category, count in reference_dims.items():
-            print(f"  {category}: {count} columns")
-
-        # Create standardized training file (remove non-feature columns for training)
-        columns_to_keep = []
-
-        # Add metadata columns (speaker, wav_file)
-        for col in df.columns:
-            if not (col.startswith('MFCC_') or col.startswith('Delta_') or col.startswith('Delta2_')):
-                columns_to_keep.append(col)
-
-        # Add all feature columns
-        for category, cols in categories.items():
-            columns_to_keep.extend(cols)
-
-        df_standardized = df[columns_to_keep]
-        output_file = "results/training_standardized.csv"
-        df_standardized.to_csv(output_file, index=False)
-
-        # Save reference for evaluation
-        reference_file = "results/feature_dimensions.json"
-        with open(reference_file, "w") as f:
-            json.dump(reference_dims, f, indent=2)
-
-        print(f"✅ Training data standardized: {df_standardized.shape}")
-        print(f"💾 Saved to: {output_file}")
-        print(f"📐 Reference dimensions saved to: {reference_file}")
-
-    elif mode == "evaluation":
-        print("🎯 EVALUATION MODE: Standardizing to match training dimensions")
-
-        # Load reference dimensions from training
-        reference_file = "results/feature_dimensions.json"
-        try:
-            with open(reference_file, "r") as f:
-                reference_dims = json.load(f)
-            print(f"📐 Loaded reference dimensions from: {reference_file}")
-            for category, count in reference_dims.items():
-                print(f"  {category}: {count} columns")
-        except FileNotFoundError:
-            print(f"❌ No reference dimensions found at {reference_file}")
-            print("Run training first: python3 standardize_features.py training")
-            sys.exit(1)
-
-        # Standardize evaluation file
-        eval_file = "results/evaluation.csv"
-        if os.path.exists(eval_file):
-            output_path, shape = standardize_to_training_dimensions(eval_file, reference_dims)
-            print(f"✅ Evaluation data standardized: {shape}")
-            print(f"💾 Output: {output_path}")
+        # Print final summary (only in CLI mode)
+        if mode == "training":
+            print(f"\n🎉 Training standardization completed!")
+            print(f"Original shape: {results['original_shape']}")
+            print(f"Standardized shape: {results['standardized_shape']}")
+            print(f"Reference dimensions: {results['reference_dims']}")
         else:
-            print(f"❌ Evaluation file {eval_file} not found!")
-            print("Run evaluation MFCC processing first.")
-            sys.exit(1)
+            print(f"\n🎉 Evaluation standardization completed!")
+            print(f"Final shape: {results['standardized_shape']}")
+            print(f"Output file: {results['output_path']}")
 
-    else:
-        print(f"❌ Unknown mode: {mode}")
-        print("Use 'training' or 'evaluation'")
+    except Exception as error:
+        print(f"❌ Error: {error}")
+        if "training" in str(error).lower():
+            print("Run training first: python3 standardize_features.py training")
+        elif "evaluation" in str(error).lower():
+            print("Run evaluation MFCC processing first.")
         sys.exit(1)
 
 

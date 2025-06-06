@@ -1,0 +1,1209 @@
+[2025-06-04 14:03:42] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 14:03:43] [INFO] [songbird-hardware.sh] 🔍 Starting comprehensive hardware validation...
+[2025-06-04 14:03:43] [INFO] [songbird-hardware.sh] Step 1/5: Locating Teensy device...
+[2025-06-04 14:03:43] [INFO] [songbird-hardware.sh] Searching for Teensy device...
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] Command failed at line 60: ls /dev/cu.usbmodem* 2> /dev/null
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] Command failed at line 76: ls /dev/tty.usbmodem* 2> /dev/null
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] No Teensy device found
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] Command failed at line 386: return 1
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] ❌ No Teensy device found
+[2025-06-04 14:03:43] [ERROR] [songbird-hardware.sh] 💥 Hardware validation FAILED after 1 attempts
+[2025-06-04 14:03:43] [INFO] [songbird-audio.sh] Performing comprehensive audio system validation...
+[2025-06-04 14:03:43] [ERROR] [songbird-audio.sh] Audio system validation failed:
+[2025-06-04 14:03:43] [ERROR] [songbird-audio.sh]   - Teensy audio device 'Teensy MIDI_Audio' not found
+[2025-06-04 14:03:43] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 14:03:43] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-04 14:03:43] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Checking pipeline prerequisites...
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 14:04:06] [WARNING] [songbird-error.sh] Unknown prerequisite: wget
+[2025-06-04 14:04:06] [WARNING] [songbird-error.sh] Unknown prerequisite: unzip
+[2025-06-04 14:04:06] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 14:04:06] [SUCCESS] [songbird-pipeline.sh] Prerequisites validation completed
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (started)
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Step 1: Download and prepare audio data...
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Downloading LibriVox audio files...
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Processing speaker 21525...
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Starting: Extracting man_who_knew_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [SUCCESS] [songbird-error.sh] Completed: Extracting man_who_knew_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Processing speaker 23723...
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/man_thursday_zach_librivox/man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/man_thursday_zach_librivox/man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [INFO] [songbird-error.sh] Starting: Extracting man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [SUCCESS] [songbird-error.sh] Completed: Extracting man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-04 14:04:06] [INFO] [songbird-pipeline.sh] Processing speaker 19839...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/emma_solo_librivox/emma_solo_librivox_64kb_mp3.zip
+[2025-06-04 14:04:07] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/emma_solo_librivox/emma_solo_librivox_64kb_mp3.zip
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Starting: Extracting emma_solo_librivox_64kb_mp3.zip
+[2025-06-04 14:04:07] [SUCCESS] [songbird-error.sh] Completed: Extracting emma_solo_librivox_64kb_mp3.zip
+[2025-06-04 14:04:07] [INFO] [songbird-pipeline.sh] Step 2: Split audio files into segments...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 14:04:07] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 14:04:07] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 14:04:07] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-04 14:04:07] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-04 14:04:07] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-04 14:04:07] [INFO] [splitall.sh] Validating source directory: audio/training
+[2025-06-04 14:04:07] [ERROR] [songbird-error.sh] Source directory not accessible
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 14:04:07] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 14:04:07] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 14:04:07] [ERROR] [songbird-error.sh] Failed: Audio splitting (exit code: 1)
+[2025-06-04 14:04:07] [ERROR] [songbird-pipeline.sh] Audio splitting failed
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-04 14:04:07] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-04 14:04:07] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (interrupted)
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 14:04:07] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-04 14:04:07] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-04 14:04:07] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (interrupted)
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 15:35:14] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 15:35:14] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 15:35:14] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-04 15:35:14] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-04 15:35:14] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-04 15:35:14] [INFO] [splitall.sh] Validating source directory: audio/training/
+[2025-06-04 15:35:14] [ERROR] [songbird-error.sh] Source directory not accessible
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:35:14] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:35:14] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:35:14] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 15:41:11] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 15:41:11] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 15:41:11] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-04 15:41:11] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-04 15:41:11] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-04 15:41:11] [INFO] [splitall.sh] Validating source directory: audio/training/
+[2025-06-04 15:41:11] [ERROR] [songbird-error.sh] Source directory not accessible
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:41:11] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:41:11] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:41:11] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 15:48:01] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 15:48:01] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-04 15:48:01] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 15:48:01] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 15:48:01] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-04 15:48:01] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-04 15:48:01] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-04 15:48:01] [INFO] [splitall.sh] Validating source directory: audio/training/
+[2025-06-04 15:48:01] [INFO] [splitall.sh] ✅ Speaker 21525:        8 MP3 files found
+[2025-06-04 15:48:01] [INFO] [splitall.sh] ✅ Speaker 23723:       16 MP3 files found
+[2025-06-04 15:48:01] [INFO] [splitall.sh] ✅ Speaker 19839:       55 MP3 files found
+[2025-06-04 15:48:01] [SUCCESS] [splitall.sh] Source directory validation completed
+[2025-06-04 15:48:01] [INFO] [splitall.sh] Found speakers: 21525 (       8 MP3 files) 23723 (      16 MP3 files) 19839 (      55 MP3 files)
+[2025-06-04 15:48:01] [INFO] [splitall.sh] Setting up output directory structure...
+[2025-06-04 15:48:01] [INFO] [songbird-utils.sh] Setting up training working directory: working-training/
+[2025-06-04 15:48:01] [INFO] [songbird-utils.sh] Creating backup of working-training/ (4.3G)...
+[2025-06-04 15:48:01] [INFO] [songbird-utils.sh] Backup location: backups/training-data_20250604_154801
+[2025-06-04 15:48:08] [SUCCESS] [songbird-utils.sh] Backup created successfully: backups/training-data_20250604_154801
+[2025-06-04 15:48:08] [INFO] [songbird-utils.sh] Clearing working directory...
+[2025-06-04 15:48:09] [INFO] [songbird-utils.sh] Setting up working directory: working-training/
+[2025-06-04 15:48:09] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//21525
+[2025-06-04 15:48:09] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//23723
+[2025-06-04 15:48:09] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//19839
+[2025-06-04 15:48:09] [SUCCESS] [songbird-utils.sh] Working directory setup complete
+[2025-06-04 15:48:09] [INFO] [splitall.sh] Processing speaker 21525...
+[2025-06-04 15:48:09] [INFO] [splitall.sh] Found 8 MP3 files for speaker 21525
+[2025-06-04 15:48:09] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:48:09] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:48:09] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-04 15:53:08] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-04 15:53:08] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-04 15:53:08] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-04 15:53:08] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-04 15:53:08] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Validating source directory: audio/training/
+[2025-06-04 15:53:08] [INFO] [splitall.sh] ✅ Speaker 21525:        8 MP3 files found
+[2025-06-04 15:53:08] [INFO] [splitall.sh] ✅ Speaker 23723:       16 MP3 files found
+[2025-06-04 15:53:08] [INFO] [splitall.sh] ✅ Speaker 19839:       55 MP3 files found
+[2025-06-04 15:53:08] [SUCCESS] [splitall.sh] Source directory validation completed
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Found speakers: 21525 (       8 MP3 files) 23723 (      16 MP3 files) 19839 (      55 MP3 files)
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Setting up output directory structure...
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Setting up training working directory: working-training/
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Setting up working directory: working-training/
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//21525
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//23723
+[2025-06-04 15:53:08] [INFO] [songbird-utils.sh] Creating speaker directory: working-training//19839
+[2025-06-04 15:53:08] [SUCCESS] [songbird-utils.sh] Working directory setup complete
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Processing speaker 21525...
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Found 8 MP3 files for speaker 21525
+[2025-06-04 15:53:08] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-04 15:53:08] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-04 15:53:08] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Checking pipeline prerequisites...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-05 14:47:22] [WARNING] [songbird-error.sh] Unknown prerequisite: wget
+[2025-06-05 14:47:22] [WARNING] [songbird-error.sh] Unknown prerequisite: unzip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-05 14:47:22] [SUCCESS] [songbird-pipeline.sh] Prerequisites validation completed
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (started)
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Step 1: Download and prepare audio data...
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Downloading LibriVox audio files...
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Processing speaker 21525...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/man_who_knew_librivox/man_who_knew_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Extracting man_who_knew_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Extracting man_who_knew_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Processing speaker 23723...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/man_thursday_zach_librivox/man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/man_thursday_zach_librivox/man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Extracting man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Extracting man_thursday_zach_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Processing speaker 19839...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Downloading https://www.archive.org/download/emma_solo_librivox/emma_solo_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Downloading https://www.archive.org/download/emma_solo_librivox/emma_solo_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Extracting emma_solo_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] Completed: Extracting emma_solo_librivox_64kb_mp3.zip
+[2025-06-05 14:47:22] [INFO] [songbird-pipeline.sh] Step 2: Split audio files into segments...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Validating environment and prerequisites...
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-05 14:47:22] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Validating speaker configuration...
+[2025-06-05 14:47:22] [SUCCESS] [songbird-utils.sh] Speaker configuration validation passed
+[2025-06-05 14:47:22] [SUCCESS] [splitall.sh] Environment validation completed successfully
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Validating source directory: audio/training
+[2025-06-05 14:47:22] [INFO] [splitall.sh] ✅ Speaker 21525:        8 MP3 files found
+[2025-06-05 14:47:22] [INFO] [splitall.sh] ✅ Speaker 23723:       16 MP3 files found
+[2025-06-05 14:47:22] [INFO] [splitall.sh] ✅ Speaker 19839:       55 MP3 files found
+[2025-06-05 14:47:22] [SUCCESS] [splitall.sh] Source directory validation completed
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Found speakers: 21525 (       8 MP3 files) 23723 (      16 MP3 files) 19839 (      55 MP3 files)
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Setting up output directory structure...
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Setting up training working directory: working-training
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Setting up working directory: working-training
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Creating speaker directory: working-training/21525
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Creating speaker directory: working-training/23723
+[2025-06-05 14:47:22] [INFO] [songbird-utils.sh] Creating speaker directory: working-training/19839
+[2025-06-05 14:47:22] [SUCCESS] [songbird-utils.sh] Working directory setup complete
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Processing speaker 21525...
+[2025-06-05 14:47:22] [INFO] [splitall.sh] Found 8 MP3 files for speaker 21525
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_08_chesterton_64kb.mp3
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:22] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:22] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:22] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:22] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_08_chesterton_64kb.mp3
+[2025-06-05 14:47:22] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_08_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:22] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:24] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:24] [SUCCESS] [split.sh] Successfully created      278 audio segments
+[2025-06-05 14:47:24] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:24] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_08_chesterton_64kb.mp3
+[2025-06-05 14:47:24] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_03_chesterton_64kb.mp3
+[2025-06-05 14:47:24] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:24] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:24] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:24] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:24] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_03_chesterton_64kb.mp3
+[2025-06-05 14:47:24] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_03_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:24] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:26] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:26] [SUCCESS] [split.sh] Successfully created      187 audio segments
+[2025-06-05 14:47:26] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:26] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_03_chesterton_64kb.mp3
+[2025-06-05 14:47:26] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_02_chesterton_64kb.mp3
+[2025-06-05 14:47:26] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:26] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:26] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:26] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:26] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_02_chesterton_64kb.mp3
+[2025-06-05 14:47:26] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_02_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:26] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:28] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:28] [SUCCESS] [split.sh] Successfully created      256 audio segments
+[2025-06-05 14:47:28] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:28] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_02_chesterton_64kb.mp3
+[2025-06-05 14:47:28] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_01_chesterton_64kb.mp3
+[2025-06-05 14:47:28] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:28] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:28] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:28] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:28] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_01_chesterton_64kb.mp3
+[2025-06-05 14:47:28] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_01_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:28] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:30] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:30] [SUCCESS] [split.sh] Successfully created      258 audio segments
+[2025-06-05 14:47:30] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:30] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_01_chesterton_64kb.mp3
+[2025-06-05 14:47:30] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_06_chesterton_64kb.mp3
+[2025-06-05 14:47:30] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:30] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:30] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:30] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:30] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_06_chesterton_64kb.mp3
+[2025-06-05 14:47:30] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_06_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:30] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:32] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:32] [SUCCESS] [split.sh] Successfully created      323 audio segments
+[2025-06-05 14:47:32] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:32] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_06_chesterton_64kb.mp3
+[2025-06-05 14:47:32] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_07_chesterton_64kb.mp3
+[2025-06-05 14:47:32] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:32] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:32] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:32] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:32] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_07_chesterton_64kb.mp3
+[2025-06-05 14:47:32] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_07_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:32] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:35] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:35] [SUCCESS] [split.sh] Successfully created      333 audio segments
+[2025-06-05 14:47:35] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:35] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_07_chesterton_64kb.mp3
+[2025-06-05 14:47:35] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_04_chesterton_64kb.mp3
+[2025-06-05 14:47:35] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:35] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:35] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:35] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:35] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_04_chesterton_64kb.mp3
+[2025-06-05 14:47:35] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_04_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:35] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:36] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:36] [SUCCESS] [split.sh] Successfully created      219 audio segments
+[2025-06-05 14:47:36] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:36] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_04_chesterton_64kb.mp3
+[2025-06-05 14:47:36] [INFO] [songbird-error.sh] Starting: Splitting the_man_who_knew_too_much_05_chesterton_64kb.mp3
+[2025-06-05 14:47:36] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:36] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:36] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:36] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:36] [INFO] [split.sh] Input: audio/training/21525/the_man_who_knew_too_much_05_chesterton_64kb.mp3
+[2025-06-05 14:47:36] [INFO] [split.sh] Output pattern: working-training/21525/the_man_who_knew_too_much_05_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:36] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:38] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:38] [SUCCESS] [split.sh] Successfully created      247 audio segments
+[2025-06-05 14:47:38] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:38] [SUCCESS] [songbird-error.sh] Completed: Splitting the_man_who_knew_too_much_05_chesterton_64kb.mp3
+[2025-06-05 14:47:38] [SUCCESS] [splitall.sh] ✅ Speaker 21525: 8 files processed successfully
+[2025-06-05 14:47:38] [INFO] [splitall.sh] Processing speaker 23723...
+[2025-06-05 14:47:38] [INFO] [splitall.sh] Found 16 MP3 files for speaker 23723
+[2025-06-05 14:47:38] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_04_chesterton_64kb.mp3
+[2025-06-05 14:47:38] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:38] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:38] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:38] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:38] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_04_chesterton_64kb.mp3
+[2025-06-05 14:47:38] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_04_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:38] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:39] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:39] [SUCCESS] [split.sh] Successfully created      132 audio segments
+[2025-06-05 14:47:39] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:39] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_04_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_05_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:39] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:39] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:39] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:39] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_05_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_05_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:39] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:39] [SUCCESS] [split.sh] Successfully created      124 audio segments
+[2025-06-05 14:47:39] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:39] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_05_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_06_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:39] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:39] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:39] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:39] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_06_chesterton_64kb.mp3
+[2025-06-05 14:47:39] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_06_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:39] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:40] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:40] [SUCCESS] [split.sh] Successfully created      114 audio segments
+[2025-06-05 14:47:40] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:40] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_06_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_07_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:40] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:40] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:40] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:40] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_07_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_07_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:40] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:40] [SUCCESS] [split.sh] Successfully created      118 audio segments
+[2025-06-05 14:47:40] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:40] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_07_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_01_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:40] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:40] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:40] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:40] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_01_chesterton_64kb.mp3
+[2025-06-05 14:47:40] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_01_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:40] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:41] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:41] [SUCCESS] [split.sh] Successfully created      138 audio segments
+[2025-06-05 14:47:41] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:41] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_01_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_00_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:41] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:41] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:41] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:41] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_00_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_00_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:41] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:41] [SUCCESS] [split.sh] Successfully created       26 audio segments
+[2025-06-05 14:47:41] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:41] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_00_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_03_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:41] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:41] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:41] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:41] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_03_chesterton_64kb.mp3
+[2025-06-05 14:47:41] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_03_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:41] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:42] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:42] [SUCCESS] [split.sh] Successfully created      145 audio segments
+[2025-06-05 14:47:42] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:42] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_03_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_02_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:42] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:42] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:42] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:42] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_02_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_02_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:42] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:42] [SUCCESS] [split.sh] Successfully created      107 audio segments
+[2025-06-05 14:47:42] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:42] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_02_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_14_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:42] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:42] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:42] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:42] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_14_chesterton_64kb.mp3
+[2025-06-05 14:47:42] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_14_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:42] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:43] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:43] [SUCCESS] [split.sh] Successfully created      147 audio segments
+[2025-06-05 14:47:43] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:43] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_14_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_15_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:43] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:43] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:43] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:43] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_15_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_15_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:43] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:43] [SUCCESS] [split.sh] Successfully created      117 audio segments
+[2025-06-05 14:47:43] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:43] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_15_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_13_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:43] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:43] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:43] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:43] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_13_chesterton_64kb.mp3
+[2025-06-05 14:47:43] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_13_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:43] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:44] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:44] [SUCCESS] [split.sh] Successfully created      131 audio segments
+[2025-06-05 14:47:44] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:44] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_13_chesterton_64kb.mp3
+[2025-06-05 14:47:44] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_12_chesterton_64kb.mp3
+[2025-06-05 14:47:44] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:44] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:44] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:44] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:44] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_12_chesterton_64kb.mp3
+[2025-06-05 14:47:44] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_12_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:44] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:45] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:45] [SUCCESS] [split.sh] Successfully created      187 audio segments
+[2025-06-05 14:47:45] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:45] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_12_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_11_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:45] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:45] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:45] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:45] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_11_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_11_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:45] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:45] [SUCCESS] [split.sh] Successfully created      112 audio segments
+[2025-06-05 14:47:45] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:45] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_11_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_08_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:45] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:45] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:45] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:45] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_08_chesterton_64kb.mp3
+[2025-06-05 14:47:45] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_08_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:45] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:46] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:46] [SUCCESS] [split.sh] Successfully created      164 audio segments
+[2025-06-05 14:47:46] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:46] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_08_chesterton_64kb.mp3
+[2025-06-05 14:47:46] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_10_chesterton_64kb.mp3
+[2025-06-05 14:47:46] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:46] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:46] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:46] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:46] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_10_chesterton_64kb.mp3
+[2025-06-05 14:47:46] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_10_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:46] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:47] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:47] [SUCCESS] [split.sh] Successfully created      207 audio segments
+[2025-06-05 14:47:47] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:47] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_10_chesterton_64kb.mp3
+[2025-06-05 14:47:47] [INFO] [songbird-error.sh] Starting: Splitting man_who_was_thursday_09_chesterton_64kb.mp3
+[2025-06-05 14:47:47] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:47] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:47] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:47] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:47] [INFO] [split.sh] Input: audio/training/23723/man_who_was_thursday_09_chesterton_64kb.mp3
+[2025-06-05 14:47:47] [INFO] [split.sh] Output pattern: working-training/23723/man_who_was_thursday_09_chesterton_64kb_%03n.wav
+[2025-06-05 14:47:47] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:47] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:47] [SUCCESS] [split.sh] Successfully created      205 audio segments
+[2025-06-05 14:47:47] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:47] [SUCCESS] [songbird-error.sh] Completed: Splitting man_who_was_thursday_09_chesterton_64kb.mp3
+[2025-06-05 14:47:47] [SUCCESS] [splitall.sh] ✅ Speaker 23723: 16 files processed successfully
+[2025-06-05 14:47:47] [INFO] [splitall.sh] Processing speaker 19839...
+[2025-06-05 14:47:47] [INFO] [splitall.sh] Found 55 MP3 files for speaker 19839
+[2025-06-05 14:47:47] [INFO] [songbird-error.sh] Starting: Splitting emma_03_06_austen_64kb.mp3
+[2025-06-05 14:47:48] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:48] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:48] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:48] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:48] [INFO] [split.sh] Input: audio/training/19839/emma_03_06_austen_64kb.mp3
+[2025-06-05 14:47:48] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_06_austen_64kb_%03n.wav
+[2025-06-05 14:47:48] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:48] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:48] [SUCCESS] [split.sh] Successfully created      208 audio segments
+[2025-06-05 14:47:48] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:48] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_06_austen_64kb.mp3
+[2025-06-05 14:47:48] [INFO] [songbird-error.sh] Starting: Splitting emma_02_15_austen_64kb.mp3
+[2025-06-05 14:47:48] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:48] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:48] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:48] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:48] [INFO] [split.sh] Input: audio/training/19839/emma_02_15_austen_64kb.mp3
+[2025-06-05 14:47:48] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_15_austen_64kb_%03n.wav
+[2025-06-05 14:47:48] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:49] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:49] [SUCCESS] [split.sh] Successfully created      128 audio segments
+[2025-06-05 14:47:49] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:49] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_15_austen_64kb.mp3
+[2025-06-05 14:47:49] [INFO] [songbird-error.sh] Starting: Splitting emma_01_12_austen_64kb.mp3
+[2025-06-05 14:47:49] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:49] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:49] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:49] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:49] [INFO] [split.sh] Input: audio/training/19839/emma_01_12_austen_64kb.mp3
+[2025-06-05 14:47:49] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_12_austen_64kb_%03n.wav
+[2025-06-05 14:47:49] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:49] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:50] [SUCCESS] [split.sh] Successfully created      133 audio segments
+[2025-06-05 14:47:50] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:50] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_12_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Starting: Splitting emma_03_10_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:50] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:50] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:50] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:50] [INFO] [split.sh] Input: audio/training/19839/emma_03_10_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_10_austen_64kb_%03n.wav
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:50] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:50] [SUCCESS] [split.sh] Successfully created      124 audio segments
+[2025-06-05 14:47:50] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:50] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_10_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Starting: Splitting emma_03_09_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:50] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:50] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:50] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:50] [INFO] [split.sh] Input: audio/training/19839/emma_03_09_austen_64kb.mp3
+[2025-06-05 14:47:50] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_09_austen_64kb_%03n.wav
+[2025-06-05 14:47:50] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:51] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:51] [SUCCESS] [split.sh] Successfully created      104 audio segments
+[2025-06-05 14:47:51] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:51] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_09_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Starting: Splitting emma_01_04_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:51] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:51] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:51] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:51] [INFO] [split.sh] Input: audio/training/19839/emma_01_04_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_04_austen_64kb_%03n.wav
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:51] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:51] [SUCCESS] [split.sh] Successfully created      132 audio segments
+[2025-06-05 14:47:51] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:51] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_04_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Starting: Splitting emma_02_03_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:51] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:51] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:51] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:51] [INFO] [split.sh] Input: audio/training/19839/emma_02_03_austen_64kb.mp3
+[2025-06-05 14:47:51] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_03_austen_64kb_%03n.wav
+[2025-06-05 14:47:51] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Successfully created      156 audio segments
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_03_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Starting: Splitting emma_02_04_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:52] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:52] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:52] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:52] [INFO] [split.sh] Input: audio/training/19839/emma_02_04_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_04_austen_64kb_%03n.wav
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Successfully created       76 audio segments
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_04_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Starting: Splitting emma_01_03_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:52] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:52] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:52] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:52] [INFO] [split.sh] Input: audio/training/19839/emma_01_03_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_03_austen_64kb_%03n.wav
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Successfully created       77 audio segments
+[2025-06-05 14:47:52] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:52] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_03_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Starting: Splitting emma_03_17_austen_64kb.mp3
+[2025-06-05 14:47:52] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:53] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:53] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:53] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:53] [INFO] [split.sh] Input: audio/training/19839/emma_03_17_austen_64kb.mp3
+[2025-06-05 14:47:53] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_17_austen_64kb_%03n.wav
+[2025-06-05 14:47:53] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:53] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:53] [SUCCESS] [split.sh] Successfully created      123 audio segments
+[2025-06-05 14:47:53] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:53] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_17_austen_64kb.mp3
+[2025-06-05 14:47:53] [INFO] [songbird-error.sh] Starting: Splitting emma_03_18_austen_64kb.mp3
+[2025-06-05 14:47:53] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:53] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:53] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:53] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:53] [INFO] [split.sh] Input: audio/training/19839/emma_03_18_austen_64kb.mp3
+[2025-06-05 14:47:53] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_18_austen_64kb_%03n.wav
+[2025-06-05 14:47:53] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:54] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:54] [SUCCESS] [split.sh] Successfully created      145 audio segments
+[2025-06-05 14:47:54] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:54] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_18_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Starting: Splitting emma_01_15_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:54] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:54] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:54] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:54] [INFO] [split.sh] Input: audio/training/19839/emma_01_15_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_15_austen_64kb_%03n.wav
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:54] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:54] [SUCCESS] [split.sh] Successfully created      141 audio segments
+[2025-06-05 14:47:54] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:54] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_15_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Starting: Splitting emma_02_12_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:54] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:54] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:54] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:54] [INFO] [split.sh] Input: audio/training/19839/emma_02_12_austen_64kb.mp3
+[2025-06-05 14:47:54] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_12_austen_64kb_%03n.wav
+[2025-06-05 14:47:54] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Successfully created       90 audio segments
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_12_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Splitting emma_03_01_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:55] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:55] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:55] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:55] [INFO] [split.sh] Input: audio/training/19839/emma_03_01_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_01_austen_64kb_%03n.wav
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Successfully created       55 audio segments
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_01_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Splitting emma_01_02_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:55] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:55] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:55] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:55] [INFO] [split.sh] Input: audio/training/19839/emma_01_02_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_02_austen_64kb_%03n.wav
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Successfully created       72 audio segments
+[2025-06-05 14:47:55] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:55] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_02_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Splitting emma_02_05_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:55] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:55] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:55] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:55] [INFO] [split.sh] Input: audio/training/19839/emma_02_05_austen_64kb.mp3
+[2025-06-05 14:47:55] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_05_austen_64kb_%03n.wav
+[2025-06-05 14:47:55] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:56] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:56] [SUCCESS] [split.sh] Successfully created      135 audio segments
+[2025-06-05 14:47:56] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:56] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_05_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Starting: Splitting emma_03_16_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:56] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:56] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:56] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:56] [INFO] [split.sh] Input: audio/training/19839/emma_03_16_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_16_austen_64kb_%03n.wav
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:56] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:56] [SUCCESS] [split.sh] Successfully created      133 audio segments
+[2025-06-05 14:47:56] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:56] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_16_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Starting: Splitting emma_02_13_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:56] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:56] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:56] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:56] [INFO] [split.sh] Input: audio/training/19839/emma_02_13_austen_64kb.mp3
+[2025-06-05 14:47:56] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_13_austen_64kb_%03n.wav
+[2025-06-05 14:47:56] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:57] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:57] [SUCCESS] [split.sh] Successfully created       87 audio segments
+[2025-06-05 14:47:57] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:57] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_13_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Starting: Splitting emma_03_19_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:57] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:57] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:57] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:57] [INFO] [split.sh] Input: audio/training/19839/emma_03_19_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_19_austen_64kb_%03n.wav
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:57] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:57] [SUCCESS] [split.sh] Successfully created       55 audio segments
+[2025-06-05 14:47:57] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:57] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_19_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Starting: Splitting emma_01_14_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:57] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:57] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:57] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:57] [INFO] [split.sh] Input: audio/training/19839/emma_01_14_austen_64kb.mp3
+[2025-06-05 14:47:57] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_14_austen_64kb_%03n.wav
+[2025-06-05 14:47:57] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:58] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:58] [SUCCESS] [split.sh] Successfully created      101 audio segments
+[2025-06-05 14:47:58] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:58] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_14_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Starting: Splitting emma_03_07_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:58] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:58] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:58] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:58] [INFO] [split.sh] Input: audio/training/19839/emma_03_07_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_07_austen_64kb_%03n.wav
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:58] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:58] [SUCCESS] [split.sh] Successfully created      134 audio segments
+[2025-06-05 14:47:58] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:58] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_07_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Starting: Splitting emma_01_13_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:58] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:58] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:58] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:58] [INFO] [split.sh] Input: audio/training/19839/emma_01_13_austen_64kb.mp3
+[2025-06-05 14:47:58] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_13_austen_64kb_%03n.wav
+[2025-06-05 14:47:58] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:59] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:59] [SUCCESS] [split.sh] Successfully created      126 audio segments
+[2025-06-05 14:47:59] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:59] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_13_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Starting: Splitting emma_02_14_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:59] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:59] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:59] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:59] [INFO] [split.sh] Input: audio/training/19839/emma_02_14_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_14_austen_64kb_%03n.wav
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:47:59] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:47:59] [SUCCESS] [split.sh] Successfully created      154 audio segments
+[2025-06-05 14:47:59] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:47:59] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_14_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Starting: Splitting emma_03_11_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:47:59] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:47:59] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:47:59] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:47:59] [INFO] [split.sh] Input: audio/training/19839/emma_03_11_austen_64kb.mp3
+[2025-06-05 14:47:59] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_11_austen_64kb_%03n.wav
+[2025-06-05 14:47:59] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:00] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:00] [SUCCESS] [split.sh] Successfully created      172 audio segments
+[2025-06-05 14:48:00] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:00] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_11_austen_64kb.mp3
+[2025-06-05 14:48:00] [INFO] [songbird-error.sh] Starting: Splitting emma_02_02_austen_64kb.mp3
+[2025-06-05 14:48:00] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:00] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:00] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:00] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:00] [INFO] [split.sh] Input: audio/training/19839/emma_02_02_austen_64kb.mp3
+[2025-06-05 14:48:00] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_02_austen_64kb_%03n.wav
+[2025-06-05 14:48:00] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Successfully created      107 audio segments
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_02_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Starting: Splitting emma_03_08_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:01] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:01] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:01] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:01] [INFO] [split.sh] Input: audio/training/19839/emma_03_08_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_08_austen_64kb_%03n.wav
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Successfully created      109 audio segments
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_08_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Starting: Splitting emma_01_05_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:01] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:01] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:01] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:01] [INFO] [split.sh] Input: audio/training/19839/emma_01_05_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_05_austen_64kb_%03n.wav
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Successfully created       78 audio segments
+[2025-06-05 14:48:01] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:01] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_05_austen_64kb.mp3
+[2025-06-05 14:48:01] [INFO] [songbird-error.sh] Starting: Splitting emma_03_14_austen_64kb.mp3
+[2025-06-05 14:48:02] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:02] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:02] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:02] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:02] [INFO] [split.sh] Input: audio/training/19839/emma_03_14_austen_64kb.mp3
+[2025-06-05 14:48:02] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_14_austen_64kb_%03n.wav
+[2025-06-05 14:48:02] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:02] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:02] [SUCCESS] [split.sh] Successfully created      148 audio segments
+[2025-06-05 14:48:02] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:02] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_14_austen_64kb.mp3
+[2025-06-05 14:48:02] [INFO] [songbird-error.sh] Starting: Splitting emma_02_07_austen_64kb.mp3
+[2025-06-05 14:48:02] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:02] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:02] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:02] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:02] [INFO] [split.sh] Input: audio/training/19839/emma_02_07_austen_64kb.mp3
+[2025-06-05 14:48:02] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_07_austen_64kb_%03n.wav
+[2025-06-05 14:48:02] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:03] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:03] [SUCCESS] [split.sh] Successfully created       97 audio segments
+[2025-06-05 14:48:03] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:03] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_07_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Starting: Splitting emma_03_02_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:03] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:03] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:03] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:03] [INFO] [split.sh] Input: audio/training/19839/emma_03_02_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_02_austen_64kb_%03n.wav
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:03] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:03] [SUCCESS] [split.sh] Successfully created      177 audio segments
+[2025-06-05 14:48:03] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:03] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_02_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Starting: Splitting emma_02_08_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:03] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:03] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:03] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:03] [INFO] [split.sh] Input: audio/training/19839/emma_02_08_austen_64kb.mp3
+[2025-06-05 14:48:03] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_08_austen_64kb_%03n.wav
+[2025-06-05 14:48:03] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:04] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:04] [SUCCESS] [split.sh] Successfully created      260 audio segments
+[2025-06-05 14:48:04] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:04] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_08_austen_64kb.mp3
+[2025-06-05 14:48:04] [INFO] [songbird-error.sh] Starting: Splitting emma_02_11_austen_64kb.mp3
+[2025-06-05 14:48:04] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:04] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:04] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:04] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:04] [INFO] [split.sh] Input: audio/training/19839/emma_02_11_austen_64kb.mp3
+[2025-06-05 14:48:04] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_11_austen_64kb_%03n.wav
+[2025-06-05 14:48:04] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:05] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:05] [SUCCESS] [split.sh] Successfully created      121 audio segments
+[2025-06-05 14:48:05] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:05] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_11_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Starting: Splitting emma_01_16_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:05] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:05] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:05] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:05] [INFO] [split.sh] Input: audio/training/19839/emma_01_16_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_16_austen_64kb_%03n.wav
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:05] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:05] [SUCCESS] [split.sh] Successfully created       85 audio segments
+[2025-06-05 14:48:05] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:05] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_16_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Starting: Splitting emma_01_11_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:05] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:05] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:05] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:05] [INFO] [split.sh] Input: audio/training/19839/emma_01_11_austen_64kb.mp3
+[2025-06-05 14:48:05] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_11_austen_64kb_%03n.wav
+[2025-06-05 14:48:05] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:06] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:06] [SUCCESS] [split.sh] Successfully created       92 audio segments
+[2025-06-05 14:48:06] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:06] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_11_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Starting: Splitting emma_02_16_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:06] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:06] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:06] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:06] [INFO] [split.sh] Input: audio/training/19839/emma_02_16_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_16_austen_64kb_%03n.wav
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:06] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:06] [SUCCESS] [split.sh] Successfully created      128 audio segments
+[2025-06-05 14:48:06] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:06] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_16_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Starting: Splitting emma_03_05_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:06] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:06] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:06] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:06] [INFO] [split.sh] Input: audio/training/19839/emma_03_05_austen_64kb.mp3
+[2025-06-05 14:48:06] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_05_austen_64kb_%03n.wav
+[2025-06-05 14:48:06] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:07] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:07] [SUCCESS] [split.sh] Successfully created      121 audio segments
+[2025-06-05 14:48:07] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:07] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_05_austen_64kb.mp3
+[2025-06-05 14:48:07] [INFO] [songbird-error.sh] Starting: Splitting emma_01_08_austen_64kb.mp3
+[2025-06-05 14:48:07] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:07] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:07] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:07] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:07] [INFO] [split.sh] Input: audio/training/19839/emma_01_08_austen_64kb.mp3
+[2025-06-05 14:48:07] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_08_austen_64kb_%03n.wav
+[2025-06-05 14:48:07] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:08] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:08] [SUCCESS] [split.sh] Successfully created      164 audio segments
+[2025-06-05 14:48:08] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:08] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_08_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Starting: Splitting emma_01_07_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:08] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:08] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:08] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:08] [INFO] [split.sh] Input: audio/training/19839/emma_01_07_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_07_austen_64kb_%03n.wav
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:08] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:08] [SUCCESS] [split.sh] Successfully created       96 audio segments
+[2025-06-05 14:48:08] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:08] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_07_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Starting: Splitting emma_03_13_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:08] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:08] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:08] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:08] [INFO] [split.sh] Input: audio/training/19839/emma_03_13_austen_64kb.mp3
+[2025-06-05 14:48:08] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_13_austen_64kb_%03n.wav
+[2025-06-05 14:48:08] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:09] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:09] [SUCCESS] [split.sh] Successfully created      141 audio segments
+[2025-06-05 14:48:09] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:09] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_13_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Starting: Splitting emma_02_17_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:09] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:09] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:09] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:09] [INFO] [split.sh] Input: audio/training/19839/emma_02_17_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_17_austen_64kb_%03n.wav
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:09] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:09] [SUCCESS] [split.sh] Successfully created       91 audio segments
+[2025-06-05 14:48:09] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:09] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_17_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Starting: Splitting emma_01_10_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:09] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:09] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:09] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:09] [INFO] [split.sh] Input: audio/training/19839/emma_01_10_austen_64kb.mp3
+[2025-06-05 14:48:09] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_10_austen_64kb_%03n.wav
+[2025-06-05 14:48:09] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:10] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:10] [SUCCESS] [split.sh] Successfully created      103 audio segments
+[2025-06-05 14:48:10] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:10] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_10_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Starting: Splitting emma_03_04_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:10] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:10] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:10] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:10] [INFO] [split.sh] Input: audio/training/19839/emma_03_04_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_04_austen_64kb_%03n.wav
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:10] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:10] [SUCCESS] [split.sh] Successfully created       88 audio segments
+[2025-06-05 14:48:10] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:10] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_04_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Starting: Splitting emma_01_09_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:10] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:10] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:10] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:10] [INFO] [split.sh] Input: audio/training/19839/emma_01_09_austen_64kb.mp3
+[2025-06-05 14:48:10] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_09_austen_64kb_%03n.wav
+[2025-06-05 14:48:10] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:11] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:11] [SUCCESS] [split.sh] Successfully created      190 audio segments
+[2025-06-05 14:48:11] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:11] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_09_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Starting: Splitting emma_01_06_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:11] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:11] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:11] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:11] [INFO] [split.sh] Input: audio/training/19839/emma_01_06_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_06_austen_64kb_%03n.wav
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:11] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:11] [SUCCESS] [split.sh] Successfully created      112 audio segments
+[2025-06-05 14:48:11] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:11] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_06_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Starting: Splitting emma_02_01_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:11] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:11] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:11] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:11] [INFO] [split.sh] Input: audio/training/19839/emma_02_01_austen_64kb.mp3
+[2025-06-05 14:48:11] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_01_austen_64kb_%03n.wav
+[2025-06-05 14:48:11] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:12] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:12] [SUCCESS] [split.sh] Successfully created      120 audio segments
+[2025-06-05 14:48:12] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:12] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_01_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Starting: Splitting emma_02_18_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:12] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:12] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:12] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:12] [INFO] [split.sh] Input: audio/training/19839/emma_02_18_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_18_austen_64kb_%03n.wav
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:12] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:12] [SUCCESS] [split.sh] Successfully created      113 audio segments
+[2025-06-05 14:48:12] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:12] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_18_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Starting: Splitting emma_03_12_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:12] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:12] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:12] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:12] [INFO] [split.sh] Input: audio/training/19839/emma_03_12_austen_64kb.mp3
+[2025-06-05 14:48:12] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_12_austen_64kb_%03n.wav
+[2025-06-05 14:48:12] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:13] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:13] [SUCCESS] [split.sh] Successfully created      123 audio segments
+[2025-06-05 14:48:13] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:13] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_12_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Starting: Splitting emma_03_15_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:13] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:13] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:13] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:13] [INFO] [split.sh] Input: audio/training/19839/emma_03_15_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_15_austen_64kb_%03n.wav
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:13] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:13] [SUCCESS] [split.sh] Successfully created      102 audio segments
+[2025-06-05 14:48:13] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:13] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_15_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Starting: Splitting emma_01_18_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:13] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:13] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:13] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:13] [INFO] [split.sh] Input: audio/training/19839/emma_01_18_austen_64kb.mp3
+[2025-06-05 14:48:13] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_18_austen_64kb_%03n.wav
+[2025-06-05 14:48:13] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:14] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:14] [SUCCESS] [split.sh] Successfully created      108 audio segments
+[2025-06-05 14:48:14] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:14] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_18_austen_64kb.mp3
+[2025-06-05 14:48:14] [INFO] [songbird-error.sh] Starting: Splitting emma_02_06_austen_64kb.mp3
+[2025-06-05 14:48:14] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:14] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:14] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:14] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:14] [INFO] [split.sh] Input: audio/training/19839/emma_02_06_austen_64kb.mp3
+[2025-06-05 14:48:14] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_06_austen_64kb_%03n.wav
+[2025-06-05 14:48:14] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:14] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:14] [SUCCESS] [split.sh] Successfully created      124 audio segments
+[2025-06-05 14:48:14] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:14] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_06_austen_64kb.mp3
+[2025-06-05 14:48:14] [INFO] [songbird-error.sh] Starting: Splitting emma_01_01_austen_64kb.mp3
+[2025-06-05 14:48:14] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:14] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:14] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:15] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:15] [INFO] [split.sh] Input: audio/training/19839/emma_01_01_austen_64kb.mp3
+[2025-06-05 14:48:15] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_01_austen_64kb_%03n.wav
+[2025-06-05 14:48:15] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:15] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:15] [SUCCESS] [split.sh] Successfully created      130 audio segments
+[2025-06-05 14:48:15] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:15] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_01_austen_64kb.mp3
+[2025-06-05 14:48:15] [INFO] [songbird-error.sh] Starting: Splitting emma_02_09_austen_64kb.mp3
+[2025-06-05 14:48:15] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:15] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:15] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:15] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:15] [INFO] [split.sh] Input: audio/training/19839/emma_02_09_austen_64kb.mp3
+[2025-06-05 14:48:15] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_09_austen_64kb_%03n.wav
+[2025-06-05 14:48:15] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Successfully created      124 audio segments
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_09_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Splitting emma_03_03_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:16] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:16] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:16] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:16] [INFO] [split.sh] Input: audio/training/19839/emma_03_03_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [split.sh] Output pattern: working-training/19839/emma_03_03_austen_64kb_%03n.wav
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Successfully created       72 audio segments
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_03_03_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Splitting emma_01_17_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:16] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:16] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:16] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:16] [INFO] [split.sh] Input: audio/training/19839/emma_01_17_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [split.sh] Output pattern: working-training/19839/emma_01_17_austen_64kb_%03n.wav
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Successfully created       55 audio segments
+[2025-06-05 14:48:16] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:16] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_01_17_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Splitting emma_02_10_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 14:48:16] [INFO] [split.sh] Starting audio file splitting process...
+[2025-06-05 14:48:16] [INFO] [split.sh] Segment duration: 10 seconds
+[2025-06-05 14:48:16] [INFO] [split.sh] Splitting audio file into 10-second segments...
+[2025-06-05 14:48:16] [INFO] [split.sh] Input: audio/training/19839/emma_02_10_austen_64kb.mp3
+[2025-06-05 14:48:16] [INFO] [split.sh] Output pattern: working-training/19839/emma_02_10_austen_64kb_%03n.wav
+[2025-06-05 14:48:16] [INFO] [songbird-error.sh] Starting: Audio splitting
+[2025-06-05 14:48:17] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:17] [SUCCESS] [split.sh] Successfully created       82 audio segments
+[2025-06-05 14:48:17] [SUCCESS] [split.sh] Audio splitting completed successfully
+[2025-06-05 14:48:17] [SUCCESS] [songbird-error.sh] Completed: Splitting emma_02_10_austen_64kb.mp3
+[2025-06-05 14:48:17] [SUCCESS] [splitall.sh] ✅ Speaker 19839: 55 files processed successfully
+[2025-06-05 14:48:17] [SUCCESS] [splitall.sh] 🎉 Audio splitting completed successfully!
+[2025-06-05 14:48:17] [SUCCESS] [splitall.sh] All speakers processed successfully!
+[2025-06-05 14:48:17] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-05 14:48:17] [INFO] [songbird-error.sh] Running cleanup: cleanup_on_exit
+[2025-06-05 14:48:17] [INFO] [splitall.sh] Cleaning up temporary files...
+[2025-06-05 14:48:17] [SUCCESS] [songbird-error.sh] Completed: Audio splitting
+[2025-06-05 14:48:17] [INFO] [songbird-pipeline.sh] Step 3: Extract MFCC features...
+[2025-06-05 14:48:17] [INFO] [songbird-error.sh] Starting: MFCC extraction
+[2025-06-05 17:31:20] [SUCCESS] [songbird-error.sh] Completed: MFCC extraction
+[2025-06-05 17:31:20] [INFO] [songbird-pipeline.sh] Step 4: Standardize features...
+[2025-06-05 17:31:20] [INFO] [songbird-error.sh] Starting: Feature standardization
+[2025-06-05 17:31:31] [SUCCESS] [songbird-error.sh] Completed: Feature standardization
+[2025-06-05 17:31:31] [INFO] [songbird-pipeline.sh] Step 5: Train model and create test set...
+[2025-06-05 17:31:31] [INFO] [songbird-error.sh] Starting: Model training
+[2025-06-05 17:32:52] [SUCCESS] [songbird-error.sh] Completed: Model training
+[2025-06-05 17:32:52] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (completed)
+[2025-06-05 17:32:52] [SUCCESS] [songbird-pipeline.sh] 🎉 Training pipeline completed in 165 minutes!
+[2025-06-05 17:32:52] [INFO] [songbird-pipeline.sh] Generated files:
+[2025-06-05 17:32:52] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-05 17:32:52] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-05 17:32:52] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-05 17:32:52] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: training (interrupted)
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Checking pipeline prerequisites...
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-05 18:45:32] [WARNING] [songbird-error.sh] Unknown prerequisite: wget
+[2025-06-05 18:45:32] [WARNING] [songbird-error.sh] Unknown prerequisite: unzip
+[2025-06-05 18:45:32] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-05 18:45:32] [SUCCESS] [songbird-pipeline.sh] Prerequisites validation completed
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: quick_evaluation (started)
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Step 1: Extract MFCC features from existing modified audio...
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Starting: MFCC processing
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Error handling system initialized
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Validating prerequisites...
+[2025-06-05 18:45:32] [SUCCESS] [songbird-error.sh] All prerequisites validated successfully
+[2025-06-05 18:45:32] [WARNING] [evaluation-process-mfcc.sh] automfcc.py is not executable. Attempting to fix...
+[2025-06-05 18:45:32] [SUCCESS] [evaluation-process-mfcc.sh] Made automfcc.py executable
+[2025-06-05 18:45:32] [SUCCESS] [evaluation-process-mfcc.sh] Environment validation completed successfully
+[2025-06-05 18:45:32] [INFO] [evaluation-process-mfcc.sh] Validating working directory: working-evaluation
+[2025-06-05 18:45:32] [INFO] [evaluation-process-mfcc.sh] ✅ Found     4220 WAV files in working directory
+[2025-06-05 18:45:32] [SUCCESS] [evaluation-process-mfcc.sh] Working directory validation completed
+[2025-06-05 18:45:32] [INFO] [evaluation-process-mfcc.sh] Validating results directory: results
+[2025-06-05 18:45:32] [ERROR] [evaluation-process-mfcc.sh] Operation cancelled by user
+[2025-06-05 18:45:32] [ERROR] [songbird-error.sh] Failed: MFCC processing (exit code: 1)
+[2025-06-05 18:45:32] [ERROR] [songbird-pipeline.sh] MFCC processing failed
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: quick (interrupted)
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Running cleanup functions...
+[2025-06-05 18:45:32] [INFO] [songbird-error.sh] Running cleanup: cleanup_pipeline
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Cleaning up pipeline execution...
+[2025-06-05 18:45:32] [INFO] [songbird-pipeline.sh] Pipeline checkpoint saved: quick (interrupted)

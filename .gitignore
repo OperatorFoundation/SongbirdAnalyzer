@@ -17,3 +17,9 @@ modified_audio_tracking_report.txt
 __pycache__/train.cpython-39.pyc
 /__pycache__
 /backup-recordings*
+/tests/unit/python/__pycache__
+tests/results/test_summary.txt
+tests/results/python_unit_tests.log
+/tests/results
+.coverage
+/backups

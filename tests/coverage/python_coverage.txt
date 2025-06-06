@@ -1,0 +1,16 @@
+Name                                                                                                Stmts   Miss  Cover
+-----------------------------------------------------------------------------------------------------------------------
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/automfcc.py                                        297     78    74%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/evaluate.py                                         85     15    82%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/predict.py                                         170    170     0%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/spinner.py                                          29      1    97%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/standardize_features.py                            162     44    73%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/helpers/test_helpers.py                      100     58    42%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/unit/python/test_automfcc.py                 127      1    99%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/unit/python/test_evaluate.py                 166      1    99%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/unit/python/test_predict.py                  173    156    10%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/unit/python/test_standardize_features.py     192      1    99%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/tests/unit/python/test_train.py                    169      2    99%
+/Users/mafalda/Documents/Operator/SongbirdAnalyzer/train.py                                           155     24    85%
+-----------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                                1825    551    70%

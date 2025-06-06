@@ -337,12 +337,15 @@ def predict_all_modes(data_prefix, model_file, testing_file_prefix="results/test
     if combined_result:
         all_results.append(combined_result)
 
-    # Process unmodified testing data
-    unmodified_result = process_single_mode_data(testing_file_prefix, model_file, None, config)
-    if unmodified_result:
-        # Rename for clarity
-        unmodified_result['mode'] = 'unmodified'
-        all_results.append(unmodified_result)
+    # Process unmodified testing data (only if files exist)
+    unmodified_result = None
+    testing_mfcc_file = f"{testing_file_prefix}_mfccs_trimmed.csv"
+    if os.path.exists(testing_mfcc_file):
+        unmodified_result = process_single_mode_data(testing_file_prefix, model_file, None, config)
+        if unmodified_result:
+            # Rename for clarity
+            unmodified_result['mode'] = 'unmodified'
+            all_results.append(unmodified_result)
 
     # Process each mode
     mode_results = []
