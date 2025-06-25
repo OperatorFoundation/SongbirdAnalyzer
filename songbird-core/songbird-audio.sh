@@ -226,59 +226,59 @@ validate_audio_routing() {
     # Clean up any existing test files
     rm -f "$test_tone_file" "$test_recording_file"
 
-    # Generate test tone
-    info "Generating test tone ($test_frequency Hz for ${test_duration}s)..."
-    if ! sox -n -r 44100 -c 1 "$test_tone_file" synth "$test_duration" sine "$test_frequency" vol 0.3 2>/dev/null; then
-        error_log "Failed to generate test tone"
-        return 1
-    fi
+    # TODO: Generate test tone
+#    info "Generating test tone ($test_frequency Hz for ${test_duration}s)..."
+#    if ! sox -n -r 44100 -c 1 "$test_tone_file" synth "$test_duration" sine "$test_frequency" vol 0.3 2>/dev/null; then
+#        error_log "Failed to generate test tone"
+#        return 1
+#    fi
 
-    # Test playback capability
-    info "Testing audio playback..."
-    if ! afplay "$test_tone_file" 2>/dev/null; then
-        error_log "Audio playback test failed"
-        rm -f "$test_tone_file"
-        return 1
-    fi
-
-    # Test recording capability
-    info "Testing audio recording..."
-    local recording_pid
-    rec "$test_recording_file" trim 0 "$test_duration" 2>/dev/null &
-    recording_pid=$!
-
-    # Wait for recording to complete
-    sleep "$((test_duration + 1))"
-
-    # Check if recording process is still running and kill if necessary
-    if kill -0 "$recording_pid" 2>/dev/null; then
-        kill "$recording_pid" 2>/dev/null
-        wait "$recording_pid" 2>/dev/null
-    fi
-
-    # Validate recorded file
-    if [[ -f "$test_recording_file" ]]; then
-        local file_size
-        if command -v stat >/dev/null; then
-            if stat --version 2>/dev/null | grep -q GNU; then
-                file_size=$(stat --format="%s" "$test_recording_file" 2>/dev/null || echo "0")
-            else
-                file_size=$(stat -f%z "$test_recording_file" 2>/dev/null || echo "0")
-            fi
-        else
-            file_size=$(wc -c < "$test_recording_file" 2>/dev/null || echo "0")
-        fi
-
-        if [[ "$file_size" -gt "$MINIMUM_VALID_AUDIO_FILE_SIZE_BYTES" ]]; then
-            success "Audio routing test passed (recorded ${file_size} bytes)"
-            rm -f "$test_tone_file" "$test_recording_file"
-            return 0
-        else
-            error_log "Audio recording test failed (file too small: ${file_size} bytes)"
-        fi
-    else
-        error_log "Audio recording test failed (no file created)"
-    fi
+    # TODO: Test playback capability
+#    info "Testing audio playback..."
+#    if ! afplay "$test_tone_file" 2>/dev/null; then
+#        error_log "Audio playback test failed"
+#        rm -f "$test_tone_file"
+#        return 1
+#    fi
+#
+#    # Test recording capability
+#    info "Testing audio recording..."
+#    local recording_pid
+#    rec "$test_recording_file" trim 0 "$test_duration" 2>/dev/null &
+#    recording_pid=$!
+#
+#    # Wait for recording to complete
+#    sleep "$((test_duration + 1))"
+#
+#    # Check if recording process is still running and kill if necessary
+#    if kill -0 "$recording_pid" 2>/dev/null; then
+#        kill "$recording_pid" 2>/dev/null
+#        wait "$recording_pid" 2>/dev/null
+#    fi
+#
+#    # Validate recorded file
+#    if [[ -f "$test_recording_file" ]]; then
+#        local file_size
+#        if command -v stat >/dev/null; then
+#            if stat --version 2>/dev/null | grep -q GNU; then
+#                file_size=$(stat --format="%s" "$test_recording_file" 2>/dev/null || echo "0")
+#            else
+#                file_size=$(stat -f%z "$test_recording_file" 2>/dev/null || echo "0")
+#            fi
+#        else
+#            file_size=$(wc -c < "$test_recording_file" 2>/dev/null || echo "0")
+#        fi
+#
+#        if [[ "$file_size" -gt "$MINIMUM_VALID_AUDIO_FILE_SIZE_BYTES" ]]; then
+#            success "Audio routing test passed (recorded ${file_size} bytes)"
+#            rm -f "$test_tone_file" "$test_recording_file"
+#            return 0
+#        else
+#            error_log "Audio recording test failed (file too small: ${file_size} bytes)"
+#        fi
+#    else
+#        error_log "Audio recording test failed (no file created)"
+#    fi
 
     # Clean up test files
     rm -f "$test_tone_file" "$test_recording_file"

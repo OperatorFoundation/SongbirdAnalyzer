@@ -130,13 +130,13 @@ setup_recording_session() {
         error_exit "No recordings to process. Check that test files exist in $FILES_DIR"
     fi
 
-    # Initialize or load checkpoint
-    if [[ "$USE_PYTHON_CHECKPOINTS" == "true" ]]; then
-        setup_checkpoint_system
-    else
-        warning "Python checkpoints disabled, using legacy tracking"
-        setup_legacy_tracking
-    fi
+#    # Initialize or load checkpoint
+#    if [[ "$USE_PYTHON_CHECKPOINTS" == "true" ]]; then
+#        setup_checkpoint_system
+#    else
+#        warning "Python checkpoints disabled, using legacy tracking"
+#        setup_legacy_tracking
+#    fi
 
     # Show session overview
     echo "Recording Session Overview:"
@@ -440,7 +440,7 @@ process_speaker_recordings() {
     local output_dir="$WORKING_DIR/$speaker"
 
     # Validate directories
-    check_file_readable "$files_dir" "Test files directory not found for speaker $speaker"
+    check_directory_readable "$files_dir" "Test files directory not found for speaker $speaker at $files_dir"
     check_directory_writable "$output_dir" "Output directory not accessible for speaker $speaker"
 
     # Get list of test files

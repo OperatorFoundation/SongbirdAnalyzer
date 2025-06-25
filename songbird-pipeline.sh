@@ -338,7 +338,7 @@ run_evaluation()
         error_exit "No feature dimensions reference found. Run training first with: $0 training"
     fi
 
-    # Use the new modernized evaluation pipeline
+    # Use evaluation pipeline
     info "Running complete evaluation pipeline..."
 
     if ! run_with_error_handling "Complete evaluation pipeline" ./evaluation-run-all.sh $FORCE_FLAG $VERBOSE_FLAG; then
@@ -502,7 +502,7 @@ show_status() {
     fi
 
     if [[ -f "$MODEL_FILE" ]]; then
-        local model_size=$(get_file_size "$MODEL_FILE")
+        local model_size=$(get_file_info "$file" false)
         echo "  Model: $MODEL_FILE ($model_size)"
     fi
 

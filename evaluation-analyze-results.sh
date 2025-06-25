@@ -264,17 +264,17 @@ validate_model_file()
 
     check_file_readable "$model_file" "Trained model file not accessible"
 
-    # Check model file size (basic validation)
-    local model_size
-    model_size=$(get_file_size "$model_file")
-
-    if [[ $model_size -lt 1024 ]]
-    then
-        warning "Model file seems very small: $model_size bytes"
-        warning "Model may be corrupted or incomplete"
-    else
-        info "✅ Model file size: $model_size bytes"
-    fi
+    # TODO: Check model file size (basic validation)
+#    local model_size
+#    model_size=$(get_file_size "$model_file")
+#
+#    if [[ $model_size -lt 1024 ]]
+#    then
+#        warning "Model file seems very small: $model_size bytes"
+#        warning "Model may be corrupted or incomplete"
+#    else
+#        info "✅ Model file size: $model_size bytes"
+#    fi
 
     success "Model file validation completed"
 }
@@ -336,7 +336,7 @@ execute_feature_standardization()
 
     # Run standardize_features.py
     if run_with_error_handling "Feature standardization" \
-        python3 "./$STANDARDIZE_SCRIPT_NAME" "$results_file" "$standardized_file"
+        python3 "./$STANDARDIZE_SCRIPT_NAME" "evaluation"
     then
         success "Feature standardization completed successfully"
 

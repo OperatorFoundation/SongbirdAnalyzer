@@ -352,12 +352,78 @@ def process_evaluation_mode(evaluation_file="results/evaluation.csv",
     if enable_printing:
         print(f"✅ Evaluation data standardized: {shape}")
         print(f"💾 Output: {output_path}")
+        print("📂 Creating separated files for prediction pipeline...")
+
+    # Create separated files for predict.py
+    # Load the standardized data
+    df_standardized = pd.read_csv(output_path)
+
+    # Determine columns
+    feature_columns = [col for col in df_standardized.columns
+                      if col not in ['speaker', 'wav_file', 'mode']]
+
+    # 1. Create combined separated files (all modes together)
+    features_only = df_standardized[feature_columns]
+    labels_only = df_standardized[['speaker']] if 'speaker' in df_standardized.columns else None
+
+    # Create file paths
+    base_name = output_path.replace('.csv', '')
+    features_file = f"{base_name}_mfccs.csv"
+    labels_file = f"{base_name}_speakers.csv"
+
+    # Save seperated files
+    features_only.to_csv(features_file, index=False)
+    files_created = [features_file]
+
+    if labels_only is not None:
+        labels_only.to_csv(labels_file, index=False)
+        files_created.append(labels_file)
+
+    # 2. Create mode-specific separated files
+    if 'mode' in df_standardized.columns:
+        unique_modes = df_standardized['mode'].unique()
+        if enable_printing:
+            print(f"📊 Found modes: {list(unique_modes)}")
+
+        for mode in unique_modes:
+            # Filter data by mode
+            mode_data = df_standardized[df_standardized['mode'] == mode]
+
+            # Create mode specific files
+            mode_features = mode_data[feature_columns]
+            mode_labels = mode_data[['speaker']] if 'speaker' in mode_data.columns else None
+
+            # File paths for this mode
+            mode_base_name = output_path.replace('_standardized.csv', '')
+            mode_features_file = f"{mode_base_name}_standardized_{mode}_mfccs.csv"
+            mode_labels_file = f"{mode_base_name}_standardized_{mode}_speakers.csv"
+
+            # Save mode specific files
+            mode_features.to_csv(mode_features_file, index=False)
+            files_created.append(mode_features_file)
+
+            if mode_labels is not None:
+                mode_labels.to_csv(mode_labels_file, index=False)
+                files_created.append(mode_labels_file)
+
+            if enable_printing:
+                print(f"   📄 Mode '{mode}': {len(mode_data)} samples")
+
+    else:
+        if enable_printing:
+            print("⚠️  No 'mode' column found - skipping mode-specific file creation")
+
+    if enable_printing:
+        print(f"✅ Created separated files:")
+        for file in files_created:
+            print(f"   📄 {file}")
 
     return {
         'output_path': output_path,
         'standardized_shape': shape,
         'standardization_info': standardization_info,
-        'reference_dims': reference_dims
+        'reference_dims': reference_dims,
+        'separated_files': files_created
     }
 
 

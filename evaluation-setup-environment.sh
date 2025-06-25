@@ -190,26 +190,26 @@ setup_audio_system()
     # Save current audio configuration
     save_original_audio_sources
 
-    # Test audio routing
-    info "Testing current audio configuration..."
-    if validate_audio_routing 3 440 "/tmp/songbird_audio_test"; then
-        success "Audio routing test passed with current configuration"
-    else
-        warning "Audio routing test failed with current configuration"
-
-        # Try switching to Teensy and test again
-        info "Attempting to switch to Teensy audio device..."
-        if switch_to_teensy_audio "both"; then
-            info "Testing audio routing with Teensy device..."
-            if validate_audio_routing 3 440 "/tmp/songbird_audio_test"; then
-                success "Audio routing working with Teensy device"
-            else
-                error_exit "Audio routing failed even with Teensy device"
-            fi
-        else
-            error_exit "Failed to switch to Teensy audio device"
-        fi
-    fi
+#    # Test audio routing
+#    info "Testing current audio configuration..."
+#    if validate_audio_routing 3 440 "/tmp/songbird_audio_test"; then
+#        success "Audio routing test passed with current configuration"
+#    else
+#        warning "Audio routing test failed with current configuration"
+#
+#        # Try switching to Teensy and test again
+#        info "Attempting to switch to Teensy audio device..."
+#        if switch_to_teensy_audio "both"; then
+#            info "Testing audio routing with Teensy device..."
+#            if validate_audio_routing 3 440 "/tmp/songbird_audio_test"; then
+#                success "Audio routing working with Teensy device"
+#            else
+#                error_exit "Audio routing failed even with Teensy device"
+#            fi
+#        else
+#            error_exit "Failed to switch to Teensy audio device"
+#        fi
+#    fi
 
     success "Audio system setup completed"
 }

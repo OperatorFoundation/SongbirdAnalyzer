@@ -230,9 +230,6 @@ validate_results_directory()
                 error_exit "Operation cancelled by user"
             fi
         fi
-
-        # Create backup if file exists
-        create_backup_copy "$results_file"
     fi
 
     success "Results directory validation completed"

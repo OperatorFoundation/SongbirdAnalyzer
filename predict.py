@@ -222,11 +222,11 @@ def process_single_mode_data(data_prefix, model_file, mode=None, config=None):
 
     # Determine file paths based on mode
     if mode:
-        mfccs_file = f"{data_prefix}_{mode}_mfccs_trimmed.csv"
+        mfccs_file = f"{data_prefix}_{mode}_mfccs.csv"
         speakers_file = f"{data_prefix}_{mode}_speakers.csv"
         output_prefix = f"{data_prefix}_{mode}"
     else:
-        mfccs_file = f"{data_prefix}_mfccs_trimmed.csv"
+        mfccs_file = f"{data_prefix}_mfccs.csv"
         speakers_file = f"{data_prefix}_speakers.csv"
         output_prefix = data_prefix
 
@@ -348,12 +348,18 @@ def predict_all_modes(data_prefix, model_file, testing_file_prefix="results/test
     mode_results = []
     for mode in mode_names:
         # Check if mode-specific files exist
-        mfcc_file = f"{data_prefix}_{mode}_mfccs_trimmed.csv"
+        mfcc_file = f"{data_prefix}_{mode}_mfccs.csv"
+        print(f"DEBUG: Looking for mode file: {mfcc_file}")
+        print(f"DEBUG: File exists: {os.path.exists(mfcc_file)}")
         if os.path.exists(mfcc_file):
             result = process_single_mode_data(data_prefix, model_file, mode, config)
             if result:
                 mode_results.append(result)
                 all_results.append(result)
+        else:
+            print(f"WARNING: Mode-specific data not found for {mode}")
+            print(f"WARNING: Mode file not found: {mfcc_file}")
+            continue
 
     # Generate comparative summary if we have multiple results
     comparison_file = None
